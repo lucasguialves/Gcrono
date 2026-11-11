@@ -1,0 +1,26 @@
+<UserControl x:Class="Cronometragem.App.Views.PainelAoVivoView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="550">
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Margin="0,0,0,10" FontWeight="Bold" FontSize="14"
+                   Text="Leituras recebidas (mais recente primeiro)" />
+
+        <DataGrid Grid.Row="1" ItemsSource="{Binding Leituras}" AutoGenerateColumns="False" IsReadOnly="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Hora" Binding="{Binding DataHora, StringFormat='HH:mm:ss'}" Width="100" />
+                <DataGridTextColumn Header="Chip" Binding="{Binding ChipId}" Width="140" />
+                <DataGridTextColumn Header="Peito" Binding="{Binding NumeroPeito}" Width="100" />
+                <DataGridTextColumn Header="Ponto de controle" Binding="{Binding PontoControle}" Width="140" />
+                <DataGridTextColumn Header="Leitor de origem" Binding="{Binding OrigemLeitor}" Width="*" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

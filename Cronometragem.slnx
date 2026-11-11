@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Cronometragem.App/Cronometragem.App.csproj" />
+    <Project Path="src/Cronometragem.Core/Cronometragem.Core.csproj" />
+    <Project Path="src/Cronometragem.Data/Cronometragem.Data.csproj" />
+    <Project Path="src/Cronometragem.Readers/Cronometragem.Readers.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Cronometragem.Core.Tests/Cronometragem.Core.Tests.csproj" />
+  </Folder>
+</Solution>

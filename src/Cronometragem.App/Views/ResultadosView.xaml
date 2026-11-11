@@ -1,0 +1,31 @@
+<UserControl x:Class="Cronometragem.App.Views.ResultadosView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="550">
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
+            <Button Content="Atualizar ranking" Padding="8,4" Margin="0,0,8,0"
+                    Command="{Binding AtualizarCommand}" />
+            <Button Content="Exportar CSV" Padding="8,4"
+                    Command="{Binding ExportarCsvCommand}" />
+        </StackPanel>
+
+        <DataGrid Grid.Row="1" ItemsSource="{Binding Resultados}" AutoGenerateColumns="False" IsReadOnly="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Peito" Binding="{Binding Resultado.NumeroPeito}" Width="70" />
+                <DataGridTextColumn Header="Atleta" Binding="{Binding NomeAtleta}" Width="*" />
+                <DataGridTextColumn Header="Categoria" Binding="{Binding NomeCategoria}" Width="120" />
+                <DataGridTextColumn Header="Tempo bruto" Binding="{Binding Resultado.TempoBruto}" Width="120" />
+                <DataGridTextColumn Header="Tempo líquido" Binding="{Binding Resultado.TempoLiquido}" Width="120" />
+                <DataGridTextColumn Header="Situação" Binding="{Binding Resultado.Situacao}" Width="100" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>
