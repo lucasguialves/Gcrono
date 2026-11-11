@@ -44,77 +44,22 @@
                 </DataGrid>
             </DockPanel>
 
-            <!-- Coluna direita: categorias e inscrições na prova ativa -->
+            <!-- Coluna direita: inscrições na prova ativa (categorias/modalidades são cadastradas na aba Provas) -->
             <Grid Grid.Column="2">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <Expander Grid.Row="0" Header="Categorias da prova" Margin="0,0,0,10">
-                    <StackPanel Margin="0,8,0,0">
-                        <ItemsControl ItemsSource="{Binding Categorias}" Margin="0,0,0,8">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Nome}" Margin="0,2" />
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="70" />
-                                <ColumnDefinition Width="70" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <TextBox Grid.Column="0" Margin="0,0,4,0"
-                                     Text="{Binding NovoNomeCategoria, UpdateSourceTrigger=PropertyChanged}"
-                                     ToolTip="Nome da categoria" />
-                            <TextBox Grid.Column="1" Margin="0,0,4,0"
-                                     Text="{Binding NovaIdadeMin, UpdateSourceTrigger=PropertyChanged}"
-                                     ToolTip="Idade mínima" />
-                            <TextBox Grid.Column="2" Margin="0,0,4,0"
-                                     Text="{Binding NovaIdadeMax, UpdateSourceTrigger=PropertyChanged}"
-                                     ToolTip="Idade máxima" />
-                            <Button Grid.Column="3" Content="Adicionar" Padding="8,4"
-                                    Command="{Binding CriarCategoriaCommand}" />
-                        </Grid>
-                    </StackPanel>
-                </Expander>
-
-                <Expander Grid.Row="1" Header="Modalidades da prova (5km, 10km, caminhada...)" Margin="0,0,0,10">
-                    <StackPanel Margin="0,8,0,0">
-                        <ItemsControl ItemsSource="{Binding Modalidades}" Margin="0,0,0,8">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Nome}" Margin="0,2" />
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <TextBox Grid.Column="0" Margin="0,0,4,0"
-                                     Text="{Binding NovoNomeModalidade, UpdateSourceTrigger=PropertyChanged}"
-                                     ToolTip="Nome da modalidade" />
-                            <Button Grid.Column="1" Content="Adicionar" Padding="8,4"
-                                    Command="{Binding CriarModalidadeCommand}" />
-                        </Grid>
-                    </StackPanel>
-                </Expander>
-
-                <DockPanel Grid.Row="2">
-                    <TextBlock DockPanel.Dock="Top" Text="Inscrições (peito + chip)" FontWeight="Bold" Margin="0,0,0,8" />
+                <DockPanel Grid.Row="0">
+                    <TextBlock DockPanel.Dock="Top" Text="Inscrições (peito + chip)" FontWeight="Bold" Margin="0,0,0,4" />
+                    <TextBlock DockPanel.Dock="Top" Margin="0,0,0,8" FontStyle="Italic" Foreground="Gray"
+                               Text="A categoria é definida automaticamente pela idade do atleta (cadastre a data de nascimento e as categorias da prova na aba Provas)." TextWrapping="Wrap" />
 
                     <Grid DockPanel.Dock="Bottom" Margin="0,8,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="80" />
                             <ColumnDefinition Width="110" />
-                            <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
@@ -129,14 +74,10 @@
                                  Text="{Binding NovoChipId, UpdateSourceTrigger=PropertyChanged}"
                                  ToolTip="Identificador do chip" />
                         <ComboBox Grid.Column="3" Margin="0,0,4,0"
-                                  ItemsSource="{Binding Categorias}" DisplayMemberPath="Nome"
-                                  SelectedItem="{Binding CategoriaSelecionadaParaInscricao}"
-                                  ToolTip="Categoria" />
-                        <ComboBox Grid.Column="4" Margin="0,0,4,0"
                                   ItemsSource="{Binding Modalidades}" DisplayMemberPath="Nome"
                                   SelectedItem="{Binding ModalidadeSelecionadaParaInscricao}"
                                   ToolTip="Modalidade" />
-                        <Button Grid.Column="5" Content="Inscrever" Padding="8,4"
+                        <Button Grid.Column="4" Content="Inscrever" Padding="8,4"
                                 Command="{Binding CriarInscricaoCommand}" />
                     </Grid>
 

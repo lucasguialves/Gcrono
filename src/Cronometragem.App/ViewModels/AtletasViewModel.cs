@@ -27,14 +27,7 @@ public partial class AtletasViewModel : ObservableObject
     [ObservableProperty] private Atleta? _atletaSelecionadoParaInscricao;
     [ObservableProperty] private string _novoNumeroPeito = string.Empty;
     [ObservableProperty] private string _novoChipId = string.Empty;
-    [ObservableProperty] private Categoria? _categoriaSelecionadaParaInscricao;
     [ObservableProperty] private Modalidade? _modalidadeSelecionadaParaInscricao;
-
-    [ObservableProperty] private string _novoNomeCategoria = string.Empty;
-    [ObservableProperty] private string _novaIdadeMin = string.Empty;
-    [ObservableProperty] private string _novaIdadeMax = string.Empty;
-
-    [ObservableProperty] private string _novoNomeModalidade = string.Empty;
 
     public Prova? ProvaAtiva => _estado.ProvaAtiva;
 
@@ -105,64 +98,6 @@ public partial class AtletasViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task CriarCategoriaAsync()
-    {
-        if (_estado.ProvaAtiva is null)
-        {
-            MessageBox.Show("Selecione a prova ativa na aba Provas primeiro.");
-            return;
-        }
-
-        if (string.IsNullOrWhiteSpace(NovoNomeCategoria))
-        {
-            MessageBox.Show("Informe o nome da categoria.");
-            return;
-        }
-
-        await using var db = await _dbFactory.CreateDbContextAsync();
-        db.Categorias.Add(new Categoria
-        {
-            ProvaId = _estado.ProvaAtiva.Id,
-            Nome = NovoNomeCategoria,
-            IdadeMin = int.TryParse(NovaIdadeMin, out var min) ? min : null,
-            IdadeMax = int.TryParse(NovaIdadeMax, out var max) ? max : null
-        });
-        await db.SaveChangesAsync();
-
-        NovoNomeCategoria = string.Empty;
-        NovaIdadeMin = string.Empty;
-        NovaIdadeMax = string.Empty;
-        await CarregarAsync();
-    }
-
-    [RelayCommand]
-    private async Task CriarModalidadeAsync()
-    {
-        if (_estado.ProvaAtiva is null)
-        {
-            MessageBox.Show("Selecione a prova ativa na aba Provas primeiro.");
-            return;
-        }
-
-        if (string.IsNullOrWhiteSpace(NovoNomeModalidade))
-        {
-            MessageBox.Show("Informe o nome da modalidade (ex.: 5km, 10km, Caminhada).");
-            return;
-        }
-
-        await using var db = await _dbFactory.CreateDbContextAsync();
-        db.Modalidades.Add(new Modalidade
-        {
-            ProvaId = _estado.ProvaAtiva.Id,
-            Nome = NovoNomeModalidade
-        });
-        await db.SaveChangesAsync();
-
-        NovoNomeModalidade = string.Empty;
-        await CarregarAsync();
-    }
-
-    [RelayCommand]
     private async Task CriarInscricaoAsync()
     {
         if (_estado.ProvaAtiva is null)
@@ -179,6 +114,16 @@ public partial class AtletasViewModel : ObservableObject
             return;
         }
 
+        var categoriaAutomatica = EncontrarCategoriaAutomatica(AtletaSelecionadoParaInscricao, _estado.ProvaAtiva);
+        if (categoriaAutomatica is null)
+        {
+            var motivo = AtletaSelecionadoParaInscricao.DataNascimento is null
+                ? "o atleta não tem data de nascimento cadastrada (edite o atleta com duplo-clique pra adicionar)"
+                : "nenhuma categoria cadastrada nesta prova bate com a idade/sexo dele";
+            MessageBox.Show($"Não foi possível determinar a categoria automaticamente: {motivo}.\n" +
+                             "A inscrição será criada sem categoria.");
+        }
+
         await using var db = await _dbFactory.CreateDbContextAsync();
         db.Inscricoes.Add(new Inscricao
         {
@@ -186,7 +131,7 @@ public partial class AtletasViewModel : ObservableObject
             AtletaId = AtletaSelecionadoParaInscricao.Id,
             NumeroPeito = NovoNumeroPeito,
             ChipId = NovoChipId,
-            CategoriaId = CategoriaSelecionadaParaInscricao?.Id,
+            CategoriaId = categoriaAutomatica?.Id,
             ModalidadeId = ModalidadeSelecionadaParaInscricao?.Id
         });
 
@@ -205,6 +150,31 @@ public partial class AtletasViewModel : ObservableObject
         NovoNumeroPeito = string.Empty;
         NovoChipId = string.Empty;
         await CarregarAsync();
+    }
+
+    /// <summary>
+    /// Determina a categoria do atleta pela idade dele na data da prova (e pelo sexo, quando a
+    /// categoria é restrita a um deles), comparando com as categorias cadastradas na prova.
+    /// </summary>
+    private Categoria? EncontrarCategoriaAutomatica(Atleta atleta, Prova prova)
+    {
+        if (atleta.DataNascimento is null)
+            return null;
+
+        var idade = CalcularIdade(atleta.DataNascimento.Value, prova.DataProva);
+
+        return Categorias.FirstOrDefault(c =>
+            (c.IdadeMin is null || idade >= c.IdadeMin) &&
+            (c.IdadeMax is null || idade <= c.IdadeMax) &&
+            (c.Sexo is null || c.Sexo == atleta.Sexo));
+    }
+
+    private static int CalcularIdade(DateOnly nascimento, DateOnly dataProva)
+    {
+        var idade = dataProva.Year - nascimento.Year;
+        if (dataProva < nascimento.AddYears(idade))
+            idade--;
+        return idade;
     }
 
     /// <summary>Chamado pela View ao dar duplo-clique num atleta — reabre os dados do banco já atualizados.</summary>

@@ -48,6 +48,76 @@
 
                 <Button Content="Criar prova" Padding="8,4" HorizontalAlignment="Left"
                         Command="{Binding CriarCommand}" />
+
+                <Separator Margin="0,16,0,12" />
+
+                <TextBlock FontWeight="Bold" Margin="0,0,0,8"
+                           Text="{Binding ProvaSelecionada.Nome, StringFormat='Categorias e modalidades de: {0}', FallbackValue='Selecione uma prova na lista para configurar categorias/modalidades'}" />
+
+                <Expander Header="Categorias (a categoria do atleta é definida automaticamente pela idade)" Margin="0,0,0,10" IsExpanded="True">
+                    <StackPanel Margin="0,8,0,0">
+                        <ItemsControl ItemsSource="{Binding Categorias}" Margin="0,0,0,8">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Margin="0,2">
+                                        <Run Text="{Binding Nome, Mode=OneWay}" FontWeight="Bold" />
+                                        <Run Text=" (idade " />
+                                        <Run Text="{Binding IdadeMin, Mode=OneWay}" />
+                                        <Run Text="–" />
+                                        <Run Text="{Binding IdadeMax, Mode=OneWay}" />
+                                        <Run Text=", " />
+                                        <Run Text="{Binding Sexo, Mode=OneWay, TargetNullValue='qualquer sexo'}" />
+                                        <Run Text=")" />
+                                    </TextBlock>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <TextBlock Text="Nome" />
+                        <TextBox Text="{Binding NovoNomeCategoria, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,4" />
+                        <Grid Margin="0,0,0,4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="4" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Idade mín." />
+                                <TextBox Text="{Binding NovaIdadeMin, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Idade máx." />
+                                <TextBox Text="{Binding NovaIdadeMax, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                        </Grid>
+                        <TextBlock Text="Sexo" />
+                        <ComboBox ItemsSource="{Binding OpcoesSexoCategoria}"
+                                  SelectedItem="{Binding NovoSexoCategoria}" Margin="0,0,0,6" />
+                        <Button Content="Adicionar categoria" Padding="8,4" HorizontalAlignment="Left"
+                                Command="{Binding CriarCategoriaCommand}" />
+                    </StackPanel>
+                </Expander>
+
+                <Expander Header="Modalidades (5km, 10km, caminhada...)" Margin="0,0,0,10">
+                    <StackPanel Margin="0,8,0,0">
+                        <ItemsControl ItemsSource="{Binding Modalidades}" Margin="0,0,0,8">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Nome}" Margin="0,2" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox Grid.Column="0" Margin="0,0,4,0"
+                                     Text="{Binding NovoNomeModalidade, UpdateSourceTrigger=PropertyChanged}" />
+                            <Button Grid.Column="1" Content="Adicionar" Padding="8,4"
+                                    Command="{Binding CriarModalidadeCommand}" />
+                        </Grid>
+                    </StackPanel>
+                </Expander>
             </StackPanel>
         </Grid>
     </Grid>
