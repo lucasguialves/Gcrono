@@ -53,6 +53,7 @@ public partial class App : Application
                 services.AddSingleton<ProvasViewModel>();
                 services.AddSingleton<AtletasViewModel>();
                 services.AddSingleton<ConfiguracaoLeitoresViewModel>();
+                services.AddSingleton<LancamentoManualViewModel>();
                 services.AddSingleton<PainelAoVivoViewModel>();
                 services.AddSingleton<ResultadosViewModel>();
 
