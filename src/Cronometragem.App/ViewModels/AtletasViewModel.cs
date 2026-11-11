@@ -164,6 +164,31 @@ public partial class AtletasViewModel : ObservableObject
         await CarregarAsync();
     }
 
+    [RelayCommand]
+    private async Task ExcluirInscricaoAsync(InscricaoExibicao? inscricaoExibicao)
+    {
+        if (inscricaoExibicao is null)
+            return;
+
+        var confirmar = MessageBox.Show(
+            $"Remover a inscrição do peito {inscricaoExibicao.Inscricao.NumeroPeito} ({inscricaoExibicao.NomeAtleta})?\n" +
+            "Isso não apaga o cadastro do atleta, só a inscrição (peito + chip) nesta prova.",
+            "Confirmar remoção", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+
+        if (confirmar != MessageBoxResult.Yes)
+            return;
+
+        await using var db = await _dbFactory.CreateDbContextAsync();
+        var inscricao = await db.Inscricoes.FindAsync(inscricaoExibicao.Inscricao.Id);
+        if (inscricao is not null)
+        {
+            db.Inscricoes.Remove(inscricao);
+            await db.SaveChangesAsync();
+        }
+
+        await CarregarAsync();
+    }
+
     /// <summary>
     /// Determina a categoria do atleta pela idade dele na data da prova (e pelo sexo, quando a
     /// categoria é restrita a um deles), comparando com as categorias cadastradas na prova.
