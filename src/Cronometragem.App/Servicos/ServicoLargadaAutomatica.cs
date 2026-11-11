@@ -26,8 +26,14 @@ public class ServicoLargadaAutomatica
         _dbFactory = dbFactory;
     }
 
-    public IReadOnlyCollection<string> ChipsPendentes(int provaId) =>
-        _pendentes.Keys.Where(k => k.ProvaId == provaId).Select(k => k.ChipId).ToList();
+    public record PendenteLargada(string ChipId, DateTime DataHoraLeitura, string OrigemLeitor);
+
+    public IReadOnlyList<PendenteLargada> PendentesDaProva(int provaId) =>
+        _pendentes
+            .Where(kv => kv.Key.ProvaId == provaId)
+            .Select(kv => new PendenteLargada(kv.Key.ChipId, kv.Value.DataHora, kv.Value.OrigemLeitor))
+            .OrderBy(p => p.DataHoraLeitura)
+            .ToList();
 
     public async Task ProcessarLeituraAsync(int provaId, string chipId, DateTime dataHoraLeitura, string origemLeitor)
     {

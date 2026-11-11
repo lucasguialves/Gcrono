@@ -11,6 +11,8 @@ namespace Cronometragem.App.ViewModels;
 
 public record LeituraExibicao(DateTime DataHora, string ChipId, PontoControle PontoControle, string OrigemLeitor, string NumeroPeito);
 
+public record PendenteExibicao(string ChipId, string NumeroPeito, DateTime DataHoraLeitura);
+
 /// <summary>
 /// Painel ao vivo das leituras recebidas (automáticas ou manuais) e, na mesma tela, o
 /// lançamento manual de largada/chegada por número de peito — backup para quando o leitor RFID
@@ -26,7 +28,7 @@ public partial class PainelAoVivoViewModel : ObservableObject, IDisposable
     public ObservableCollection<LeituraExibicao> Leituras { get; } = new();
 
     [ObservableProperty]
-    private ObservableCollection<string> _chipsPendentesDeLargada = new();
+    private ObservableCollection<PendenteExibicao> _pendentesDeLargada = new();
 
     [ObservableProperty]
     private ObservableCollection<InscricaoExibicao> _inscricoes = new();
@@ -151,10 +153,7 @@ public partial class PainelAoVivoViewModel : ObservableObject, IDisposable
             return;
         }
 
-        var qtd = await _servicoLargadaAutomatica.ConfirmarLargadasAsync(_estado.ProvaAtiva.Id);
-        MessageBox.Show(qtd == 0
-            ? "Não havia nenhuma leitura pendente de largada."
-            : $"{qtd} largada(s) confirmada(s). A partir de agora, a próxima leitura de cada um desses chips já conta como chegada.");
+        await _servicoLargadaAutomatica.ConfirmarLargadasAsync(_estado.ProvaAtiva.Id);
     }
 
     private void OnLeituraProcessada(object? sender, LeituraProcessadaEventArgs e)
@@ -182,12 +181,18 @@ public partial class PainelAoVivoViewModel : ObservableObject, IDisposable
     {
         if (_estado.ProvaAtiva is null)
         {
-            ChipsPendentesDeLargada = new ObservableCollection<string>();
+            PendentesDeLargada = new ObservableCollection<PendenteExibicao>();
             return;
         }
 
-        ChipsPendentesDeLargada = new ObservableCollection<string>(
-            _servicoLargadaAutomatica.ChipsPendentes(_estado.ProvaAtiva.Id));
+        var pendentes = _servicoLargadaAutomatica.PendentesDaProva(_estado.ProvaAtiva.Id);
+
+        PendentesDeLargada = new ObservableCollection<PendenteExibicao>(pendentes.Select(p =>
+        {
+            var peito = Inscricoes.FirstOrDefault(i => i.Inscricao.ChipId == p.ChipId)?.Inscricao.NumeroPeito
+                ?? "NÃO INSCRITO";
+            return new PendenteExibicao(p.ChipId, peito, p.DataHoraLeitura);
+        }));
     }
 
     public void Dispose()

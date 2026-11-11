@@ -14,30 +14,33 @@
         <GroupBox Grid.Row="0" Margin="0,0,0,10"
                   Header="Leitor único (largada e chegada automáticas)">
             <Grid Margin="8">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <StackPanel Grid.Column="0">
-                    <TextBlock Text="Chips aguardando confirmação de largada:" FontWeight="Bold" Margin="0,0,0,4" />
-                    <ItemsControl ItemsSource="{Binding ChipsPendentesDeLargada}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Border Background="#FFF0E0" BorderBrush="#E0A000" BorderThickness="1"
-                                        CornerRadius="3" Padding="6,2" Margin="0,0,6,6">
-                                    <TextBlock Text="{Binding}" />
-                                </Border>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </StackPanel>
-                <Button Grid.Column="1" Content="Confirmar largadas" Padding="12,6" VerticalAlignment="Top"
-                        Command="{Binding ConfirmarLargadasCommand}" />
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Margin="0,0,0,4" FontWeight="Bold"
+                           Text="{Binding PendentesDeLargada.Count, StringFormat='Leituras aguardando confirmação de largada ({0}):'}" />
+
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <DataGrid Grid.Column="0" ItemsSource="{Binding PendentesDeLargada}" MaxHeight="180"
+                              AutoGenerateColumns="False" IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Hora" Binding="{Binding DataHoraLeitura, StringFormat='HH:mm:ss'}" Width="100" />
+                            <DataGridTextColumn Header="Chip" Binding="{Binding ChipId}" Width="140" />
+                            <DataGridTextColumn Header="Peito" Binding="{Binding NumeroPeito}" Width="*" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <Button Grid.Column="1" Content="Confirmar largadas" Padding="12,6"
+                            VerticalAlignment="Top" Margin="8,0,0,0"
+                            Command="{Binding ConfirmarLargadasCommand}" />
+                </Grid>
             </Grid>
         </GroupBox>
 
