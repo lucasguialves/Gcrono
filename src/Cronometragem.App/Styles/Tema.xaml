@@ -1,16 +1,17 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <!-- Paleta de cores -->
-    <SolidColorBrush x:Key="CorPrimaria" Color="#1565C0" />
-    <SolidColorBrush x:Key="CorPrimariaEscura" Color="#0D47A1" />
-    <SolidColorBrush x:Key="CorPrimariaClara" Color="#E3F0FD" />
-    <SolidColorBrush x:Key="CorFundoJanela" Color="#F3F5F8" />
+    <!-- Paleta de cores (tema escuro) -->
+    <SolidColorBrush x:Key="CorPrimaria" Color="#2F80ED" />
+    <SolidColorBrush x:Key="CorPrimariaEscura" Color="#1C5FC2" />
+    <SolidColorBrush x:Key="CorPrimariaClara" Color="#243352" />
+    <SolidColorBrush x:Key="CorFundoJanela" Color="#121417" />
+    <SolidColorBrush x:Key="CorSuperficie" Color="#1E222A" />
     <SolidColorBrush x:Key="CorBranco" Color="#FFFFFF" />
-    <SolidColorBrush x:Key="CorTextoPrincipal" Color="#1A1A1A" />
-    <SolidColorBrush x:Key="CorTextoSecundario" Color="#5A6472" />
-    <SolidColorBrush x:Key="CorBorda" Color="#D7DCE3" />
-    <SolidColorBrush x:Key="CorLinhaAlternada" Color="#F7F9FB" />
+    <SolidColorBrush x:Key="CorTextoPrincipal" Color="#E8EAED" />
+    <SolidColorBrush x:Key="CorTextoSecundario" Color="#9AA5B1" />
+    <SolidColorBrush x:Key="CorBorda" Color="#333842" />
+    <SolidColorBrush x:Key="CorLinhaAlternada" Color="#262B35" />
 
     <!-- Janela -->
     <Style TargetType="Window">
@@ -63,7 +64,7 @@
 
     <!-- Botão secundário (ex.: Cancelar) -->
     <Style x:Key="BotaoSecundario" TargetType="Button">
-        <Setter Property="Background" Value="{StaticResource CorBranco}" />
+        <Setter Property="Background" Value="{StaticResource CorSuperficie}" />
         <Setter Property="Foreground" Value="{StaticResource CorPrimaria}" />
         <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="Cursor" Value="Hand" />
@@ -88,7 +89,7 @@
 
     <!-- TextBox -->
     <Style TargetType="TextBox">
-        <Setter Property="Background" Value="{StaticResource CorBranco}" />
+        <Setter Property="Background" Value="{StaticResource CorSuperficie}" />
         <Setter Property="Foreground" Value="{StaticResource CorTextoPrincipal}" />
         <Setter Property="BorderBrush" Value="{StaticResource CorBorda}" />
         <Setter Property="BorderThickness" Value="1" />
@@ -117,7 +118,7 @@
 
     <!-- ComboBox: recolore sem substituir o template inteiro (evita perder o dropdown nativo) -->
     <Style TargetType="ComboBox">
-        <Setter Property="Background" Value="{StaticResource CorBranco}" />
+        <Setter Property="Background" Value="{StaticResource CorSuperficie}" />
         <Setter Property="BorderBrush" Value="{StaticResource CorBorda}" />
         <Setter Property="Foreground" Value="{StaticResource CorTextoPrincipal}" />
         <Setter Property="Padding" Value="6,5" />
@@ -125,7 +126,7 @@
 
     <!-- DatePicker -->
     <Style TargetType="DatePicker">
-        <Setter Property="Background" Value="{StaticResource CorBranco}" />
+        <Setter Property="Background" Value="{StaticResource CorSuperficie}" />
         <Setter Property="BorderBrush" Value="{StaticResource CorBorda}" />
         <Setter Property="Padding" Value="4" />
     </Style>
@@ -144,7 +145,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="TabItem">
-                    <Border x:Name="Fundo" Background="{StaticResource CorBranco}"
+                    <Border x:Name="Fundo" Background="{StaticResource CorSuperficie}"
                             BorderBrush="Transparent" BorderThickness="0,0,0,3" Padding="{TemplateBinding Padding}">
                         <ContentPresenter ContentSource="Header" HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
@@ -164,8 +165,8 @@
 
     <!-- DataGrid -->
     <Style TargetType="DataGrid">
-        <Setter Property="Background" Value="{StaticResource CorBranco}" />
-        <Setter Property="RowBackground" Value="{StaticResource CorBranco}" />
+        <Setter Property="Background" Value="{StaticResource CorSuperficie}" />
+        <Setter Property="RowBackground" Value="{StaticResource CorSuperficie}" />
         <Setter Property="AlternatingRowBackground" Value="{StaticResource CorLinhaAlternada}" />
         <Setter Property="BorderBrush" Value="{StaticResource CorBorda}" />
         <Setter Property="BorderThickness" Value="1" />
@@ -188,6 +189,8 @@
     <Style TargetType="DataGridCell">
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Padding" Value="6,2" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{StaticResource CorTextoPrincipal}" />
         <Style.Triggers>
             <Trigger Property="IsSelected" Value="True">
                 <Setter Property="Background" Value="{StaticResource CorPrimariaClara}" />
@@ -201,7 +204,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="GroupBox">
-                    <Border Background="{StaticResource CorBranco}" BorderBrush="{StaticResource CorBorda}"
+                    <Border Background="{StaticResource CorSuperficie}" BorderBrush="{StaticResource CorBorda}"
                             BorderThickness="1" CornerRadius="5" Padding="10">
                         <StackPanel>
                             <TextBlock Text="{TemplateBinding Header}" FontWeight="Bold"
@@ -216,7 +219,7 @@
 
     <!-- Expander -->
     <Style TargetType="Expander">
-        <Setter Property="Background" Value="{StaticResource CorBranco}" />
+        <Setter Property="Background" Value="{StaticResource CorSuperficie}" />
         <Setter Property="Foreground" Value="{StaticResource CorPrimaria}" />
         <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="BorderBrush" Value="{StaticResource CorBorda}" />
