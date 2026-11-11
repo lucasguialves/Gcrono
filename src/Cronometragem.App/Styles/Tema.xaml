@@ -116,19 +116,150 @@
         </Setter>
     </Style>
 
-    <!-- ComboBox: recolore sem substituir o template inteiro (evita perder o dropdown nativo) -->
+    <!-- Itens da lista suspensa do ComboBox -->
+    <Style TargetType="ComboBoxItem">
+        <Setter Property="Padding" Value="8,5" />
+        <Setter Property="Foreground" Value="{StaticResource CorTextoPrincipal}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ComboBoxItem">
+                    <Border x:Name="Fundo" Background="Transparent" Padding="{TemplateBinding Padding}">
+                        <ContentPresenter />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsHighlighted" Value="True">
+                            <Setter TargetName="Fundo" Property="Background" Value="{StaticResource CorPrimariaClara}" />
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="Fundo" Property="Background" Value="{StaticResource CorPrimaria}" />
+                            <Setter Property="Foreground" Value="{StaticResource CorBranco}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ComboBox: template completo (o template padrão do WPF não respeita Background/Foreground
+         nem na caixa fechada nem na lista suspensa, deixando texto branco sobre fundo branco) -->
     <Style TargetType="ComboBox">
         <Setter Property="Background" Value="{StaticResource CorSuperficie}" />
         <Setter Property="BorderBrush" Value="{StaticResource CorBorda}" />
         <Setter Property="Foreground" Value="{StaticResource CorTextoPrincipal}" />
-        <Setter Property="Padding" Value="6,5" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="8,5" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ComboBox">
+                    <Grid TextElement.Foreground="{TemplateBinding Foreground}">
+                        <ToggleButton x:Name="ToggleButton" Focusable="False" ClickMode="Press"
+                                      IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
+                            <ToggleButton.Template>
+                                <ControlTemplate TargetType="ToggleButton">
+                                    <Border Background="{StaticResource CorSuperficie}"
+                                            BorderBrush="{StaticResource CorBorda}" BorderThickness="1" CornerRadius="3">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="22" />
+                                            </Grid.ColumnDefinitions>
+                                            <Path Grid.Column="1" Data="M0,0 L4,4 L8,0 Z"
+                                                  Fill="{StaticResource CorTextoSecundario}"
+                                                  HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                        </Grid>
+                                    </Border>
+                                </ControlTemplate>
+                            </ToggleButton.Template>
+                        </ToggleButton>
+                        <ContentPresenter x:Name="ContentSite" IsHitTestVisible="False"
+                                          Content="{TemplateBinding SelectionBoxItem}"
+                                          ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                          ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                          Margin="{TemplateBinding Padding}"
+                                          HorizontalAlignment="Left" VerticalAlignment="Center" />
+                        <Popup x:Name="Popup" Placement="Bottom" AllowsTransparency="True"
+                               IsOpen="{TemplateBinding IsDropDownOpen}" Focusable="False" PopupAnimation="Slide">
+                            <Border Background="{StaticResource CorSuperficie}" BorderBrush="{StaticResource CorBorda}"
+                                    BorderThickness="1" CornerRadius="3" MaxHeight="300"
+                                    MinWidth="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}">
+                                <ScrollViewer Margin="2" SnapsToDevicePixels="True">
+                                    <ItemsPresenter />
+                                </ScrollViewer>
+                            </Border>
+                        </Popup>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
-    <!-- DatePicker -->
+    <!-- DatePicker: a caixa de texto interna (DatePickerTextBox) tem template próprio e
+         precisa ser estilizada separadamente, senão fica com fundo branco. -->
+    <Style TargetType="DatePickerTextBox">
+        <Setter Property="Background" Value="{StaticResource CorSuperficie}" />
+        <Setter Property="Foreground" Value="{StaticResource CorTextoPrincipal}" />
+        <Setter Property="BorderBrush" Value="{StaticResource CorBorda}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="6,5" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <!-- DatePickerTextBox herda de TextBox: o template usa PART_ContentHost, igual a uma TextBox comum. -->
+                <ControlTemplate TargetType="DatePickerTextBox">
+                    <Border x:Name="Fundo" Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="3" TextElement.Foreground="{TemplateBinding Foreground}">
+                        <Grid>
+                            <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}" VerticalAlignment="Center" />
+                            <ContentControl x:Name="PART_Watermark" Focusable="False" IsHitTestVisible="False"
+                                            Margin="{TemplateBinding Padding}" VerticalAlignment="Center"
+                                            Foreground="{StaticResource CorTextoSecundario}" />
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style TargetType="DatePicker">
         <Setter Property="Background" Value="{StaticResource CorSuperficie}" />
         <Setter Property="BorderBrush" Value="{StaticResource CorBorda}" />
         <Setter Property="Padding" Value="4" />
+    </Style>
+
+    <!-- Calendário do DatePicker -->
+    <Style TargetType="CalendarItem">
+        <Setter Property="Background" Value="{StaticResource CorSuperficie}" />
+        <Setter Property="Foreground" Value="{StaticResource CorTextoPrincipal}" />
+    </Style>
+
+    <Style TargetType="Calendar">
+        <Setter Property="Background" Value="{StaticResource CorSuperficie}" />
+        <Setter Property="BorderBrush" Value="{StaticResource CorBorda}" />
+        <Setter Property="Foreground" Value="{StaticResource CorTextoPrincipal}" />
+    </Style>
+
+    <Style TargetType="CalendarDayButton">
+        <Setter Property="Foreground" Value="{StaticResource CorTextoPrincipal}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="{StaticResource CorPrimaria}" />
+                <Setter Property="Foreground" Value="{StaticResource CorBranco}" />
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource CorPrimariaClara}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="CalendarButton">
+        <Setter Property="Foreground" Value="{StaticResource CorTextoPrincipal}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource CorPrimariaClara}" />
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <!-- TabControl / TabItem: barra de navegação estilo "underline" -->
