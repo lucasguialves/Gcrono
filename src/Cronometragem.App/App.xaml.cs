@@ -47,7 +47,6 @@ public partial class App : Application
                 services.AddSingleton<ICalculadoraTempo>(new CalculadoraTempo());
                 services.AddSingleton<EstadoAplicacao>();
                 services.AddSingleton<ServicoCronometragem>();
-                services.AddSingleton<ServicoLargadaAutomatica>();
                 services.AddSingleton<ServicoResultados>();
                 services.AddSingleton<GerenciadorLeitores>();
 

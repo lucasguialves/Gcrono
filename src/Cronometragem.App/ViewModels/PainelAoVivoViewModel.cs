@@ -11,8 +11,6 @@ namespace Cronometragem.App.ViewModels;
 
 public record LeituraExibicao(DateTime DataHora, string ChipId, PontoControle PontoControle, string OrigemLeitor, string NumeroPeito);
 
-public record PendenteExibicao(string ChipId, string NumeroPeito, DateTime DataHoraLeitura);
-
 /// <summary>
 /// Painel ao vivo das leituras recebidas (automáticas ou manuais) e, na mesma tela, o
 /// lançamento manual de largada/chegada por número de peito — backup para quando o leitor RFID
@@ -22,13 +20,9 @@ public partial class PainelAoVivoViewModel : ObservableObject, IDisposable
 {
     private readonly IDbContextFactory<CronometragemDbContext> _dbFactory;
     private readonly ServicoCronometragem _servico;
-    private readonly ServicoLargadaAutomatica _servicoLargadaAutomatica;
     private readonly EstadoAplicacao _estado;
 
     public ObservableCollection<LeituraExibicao> Leituras { get; } = new();
-
-    [ObservableProperty]
-    private ObservableCollection<PendenteExibicao> _pendentesDeLargada = new();
 
     [ObservableProperty]
     private ObservableCollection<InscricaoExibicao> _inscricoes = new();
@@ -68,15 +62,12 @@ public partial class PainelAoVivoViewModel : ObservableObject, IDisposable
     public PainelAoVivoViewModel(
         IDbContextFactory<CronometragemDbContext> dbFactory,
         ServicoCronometragem servico,
-        ServicoLargadaAutomatica servicoLargadaAutomatica,
         EstadoAplicacao estado)
     {
         _dbFactory = dbFactory;
         _servico = servico;
-        _servicoLargadaAutomatica = servicoLargadaAutomatica;
         _estado = estado;
         _servico.LeituraProcessada += OnLeituraProcessada;
-        _servicoLargadaAutomatica.PendentesAlterados += OnPendentesAlterados;
 
         _estado.PropertyChanged += async (_, e) =>
         {
@@ -85,7 +76,6 @@ public partial class PainelAoVivoViewModel : ObservableObject, IDisposable
 
             OnPropertyChanged(nameof(ProvaAtiva));
             await CarregarInscricoesAsync();
-            AtualizarChipsPendentes();
         };
 
         _ = CarregarInscricoesAsync();
@@ -146,18 +136,6 @@ public partial class PainelAoVivoViewModel : ObservableObject, IDisposable
         HoraRegistro = DateTime.Now;
     }
 
-    [RelayCommand]
-    private async Task ConfirmarLargadasAsync()
-    {
-        if (_estado.ProvaAtiva is null)
-        {
-            MessageBox.Show("Selecione a prova ativa na aba Provas primeiro.");
-            return;
-        }
-
-        await _servicoLargadaAutomatica.ConfirmarLargadasAsync(_estado.ProvaAtiva.Id);
-    }
-
     private void OnLeituraProcessada(object? sender, LeituraProcessadaEventArgs e)
     {
         if (_estado.ProvaAtiva is null || e.Leitura.ProvaId != _estado.ProvaAtiva.Id)
@@ -174,33 +152,9 @@ public partial class PainelAoVivoViewModel : ObservableObject, IDisposable
         });
     }
 
-    private void OnPendentesAlterados(object? sender, EventArgs e)
-    {
-        Application.Current.Dispatcher.Invoke(AtualizarChipsPendentes);
-    }
-
-    private void AtualizarChipsPendentes()
-    {
-        if (_estado.ProvaAtiva is null)
-        {
-            PendentesDeLargada = new ObservableCollection<PendenteExibicao>();
-            return;
-        }
-
-        var pendentes = _servicoLargadaAutomatica.PendentesDaProva(_estado.ProvaAtiva.Id);
-
-        PendentesDeLargada = new ObservableCollection<PendenteExibicao>(pendentes.Select(p =>
-        {
-            var peito = Inscricoes.FirstOrDefault(i => i.Inscricao.ChipId == p.ChipId)?.Inscricao.NumeroPeito
-                ?? "NÃO INSCRITO";
-            return new PendenteExibicao(p.ChipId, peito, p.DataHoraLeitura);
-        }));
-    }
-
     public void Dispose()
     {
         _servico.LeituraProcessada -= OnLeituraProcessada;
-        _servicoLargadaAutomatica.PendentesAlterados -= OnPendentesAlterados;
         GC.SuppressFinalize(this);
     }
 }
