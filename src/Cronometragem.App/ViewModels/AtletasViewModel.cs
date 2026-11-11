@@ -189,6 +189,30 @@ public partial class AtletasViewModel : ObservableObject
         await CarregarAsync();
     }
 
+    [RelayCommand]
+    private async Task ExcluirTodosAtletasAsync()
+    {
+        if (Atletas.Count == 0)
+        {
+            MessageBox.Show("Não há nenhum atleta cadastrado.");
+            return;
+        }
+
+        var confirmar = MessageBox.Show(
+            $"Excluir TODOS os {Atletas.Count} atletas cadastrados?\n\n" +
+            "Isso também apaga automaticamente todas as inscrições (peito + chip) deles em " +
+            "QUALQUER prova, não só na prova ativa. Essa ação não pode ser desfeita.",
+            "Excluir todos os atletas", MessageBoxButton.YesNo, MessageBoxImage.Stop);
+
+        if (confirmar != MessageBoxResult.Yes)
+            return;
+
+        await using var db = await _dbFactory.CreateDbContextAsync();
+        await db.Atletas.ExecuteDeleteAsync();
+
+        await CarregarAsync();
+    }
+
     /// <summary>
     /// Determina a categoria do atleta pela idade dele na data da prova (e pelo sexo, quando a
     /// categoria é restrita a um deles), comparando com as categorias cadastradas na prova.

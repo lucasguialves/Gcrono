@@ -22,7 +22,12 @@
 
             <!-- Coluna esquerda: cadastro geral de atletas -->
             <DockPanel Grid.Column="0">
-                <TextBlock DockPanel.Dock="Top" Text="Atletas (cadastro geral)" FontWeight="Bold" Margin="0,0,0,8" />
+                <DockPanel DockPanel.Dock="Top" Margin="0,0,0,8">
+                    <TextBlock DockPanel.Dock="Left" Text="Atletas (cadastro geral)" FontWeight="Bold" VerticalAlignment="Center" />
+                    <Button DockPanel.Dock="Right" Content="Excluir todos" Padding="8,4"
+                            Style="{StaticResource BotaoPerigo}"
+                            Command="{Binding ExcluirTodosAtletasCommand}" />
+                </DockPanel>
 
                 <StackPanel DockPanel.Dock="Bottom" Margin="0,8,0,0">
                     <TextBlock Text="Nome" />

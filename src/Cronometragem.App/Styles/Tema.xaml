@@ -87,6 +87,31 @@
         </Setter>
     </Style>
 
+    <!-- Botão de ação destrutiva (ex.: excluir tudo) -->
+    <Style x:Key="BotaoPerigo" TargetType="Button">
+        <Setter Property="Background" Value="#C0392B" />
+        <Setter Property="Foreground" Value="{StaticResource CorBranco}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Padding" Value="10,6" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Fundo" Background="{TemplateBinding Background}" CornerRadius="4">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"
+                                          Margin="{TemplateBinding Padding}" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Fundo" Property="Background" Value="#962D22" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!-- TextBox -->
     <Style TargetType="TextBox">
         <Setter Property="Background" Value="{StaticResource CorSuperficie}" />
