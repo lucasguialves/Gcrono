@@ -25,7 +25,8 @@
         <TextBox Grid.Row="5" x:Name="TxtHoraLargada" Margin="0,0,0,10" />
 
         <StackPanel Grid.Row="7" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Content="Cancelar" Padding="12,6" Margin="0,0,8,0" IsCancel="True" Click="Cancelar_Click" />
+            <Button Content="Cancelar" Padding="12,6" Margin="0,0,8,0" IsCancel="True" Click="Cancelar_Click"
+                    Style="{StaticResource BotaoSecundario}" />
             <Button Content="Salvar" Padding="12,6" IsDefault="True" Click="Salvar_Click" />
         </StackPanel>
     </Grid>

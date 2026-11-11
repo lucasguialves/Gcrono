@@ -1,0 +1,227 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Paleta de cores -->
+    <SolidColorBrush x:Key="CorPrimaria" Color="#1565C0" />
+    <SolidColorBrush x:Key="CorPrimariaEscura" Color="#0D47A1" />
+    <SolidColorBrush x:Key="CorPrimariaClara" Color="#E3F0FD" />
+    <SolidColorBrush x:Key="CorFundoJanela" Color="#F3F5F8" />
+    <SolidColorBrush x:Key="CorBranco" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="CorTextoPrincipal" Color="#1A1A1A" />
+    <SolidColorBrush x:Key="CorTextoSecundario" Color="#5A6472" />
+    <SolidColorBrush x:Key="CorBorda" Color="#D7DCE3" />
+    <SolidColorBrush x:Key="CorLinhaAlternada" Color="#F7F9FB" />
+
+    <!-- Janela -->
+    <Style TargetType="Window">
+        <Setter Property="Background" Value="{StaticResource CorFundoJanela}" />
+        <Setter Property="FontFamily" Value="Segoe UI" />
+        <Setter Property="TextElement.Foreground" Value="{StaticResource CorTextoPrincipal}" />
+    </Style>
+
+    <Style TargetType="UserControl">
+        <Setter Property="Background" Value="{StaticResource CorFundoJanela}" />
+        <Setter Property="TextElement.Foreground" Value="{StaticResource CorTextoPrincipal}" />
+    </Style>
+
+    <!-- Texto -->
+    <Style TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{StaticResource CorTextoPrincipal}" />
+    </Style>
+
+    <!-- Botão -->
+    <Style TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource CorPrimaria}" />
+        <Setter Property="Foreground" Value="{StaticResource CorBranco}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Padding" Value="10,6" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Fundo" Background="{TemplateBinding Background}" CornerRadius="4">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"
+                                          Margin="{TemplateBinding Padding}" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Fundo" Property="Background" Value="{StaticResource CorPrimariaEscura}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Fundo" Property="Background" Value="{StaticResource CorPrimariaEscura}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Fundo" Property="Background" Value="{StaticResource CorBorda}" />
+                            <Setter Property="Foreground" Value="{StaticResource CorTextoSecundario}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Botão secundário (ex.: Cancelar) -->
+    <Style x:Key="BotaoSecundario" TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource CorBranco}" />
+        <Setter Property="Foreground" Value="{StaticResource CorPrimaria}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Padding" Value="10,6" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Fundo" Background="{TemplateBinding Background}" CornerRadius="4"
+                            BorderBrush="{StaticResource CorPrimaria}" BorderThickness="1">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"
+                                          Margin="{TemplateBinding Padding}" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Fundo" Property="Background" Value="{StaticResource CorPrimariaClara}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- TextBox -->
+    <Style TargetType="TextBox">
+        <Setter Property="Background" Value="{StaticResource CorBranco}" />
+        <Setter Property="Foreground" Value="{StaticResource CorTextoPrincipal}" />
+        <Setter Property="BorderBrush" Value="{StaticResource CorBorda}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="6,5" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TextBox">
+                    <Border x:Name="Fundo" Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="3">
+                        <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}" VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                            <Setter TargetName="Fundo" Property="BorderBrush" Value="{StaticResource CorPrimaria}" />
+                            <Setter TargetName="Fundo" Property="BorderThickness" Value="2" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Fundo" Property="Background" Value="{StaticResource CorFundoJanela}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ComboBox: recolore sem substituir o template inteiro (evita perder o dropdown nativo) -->
+    <Style TargetType="ComboBox">
+        <Setter Property="Background" Value="{StaticResource CorBranco}" />
+        <Setter Property="BorderBrush" Value="{StaticResource CorBorda}" />
+        <Setter Property="Foreground" Value="{StaticResource CorTextoPrincipal}" />
+        <Setter Property="Padding" Value="6,5" />
+    </Style>
+
+    <!-- DatePicker -->
+    <Style TargetType="DatePicker">
+        <Setter Property="Background" Value="{StaticResource CorBranco}" />
+        <Setter Property="BorderBrush" Value="{StaticResource CorBorda}" />
+        <Setter Property="Padding" Value="4" />
+    </Style>
+
+    <!-- TabControl / TabItem: barra de navegação estilo "underline" -->
+    <Style TargetType="TabControl">
+        <Setter Property="Background" Value="{StaticResource CorFundoJanela}" />
+        <Setter Property="BorderThickness" Value="0" />
+    </Style>
+
+    <Style TargetType="TabItem">
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Padding" Value="18,12" />
+        <Setter Property="Foreground" Value="{StaticResource CorTextoSecundario}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TabItem">
+                    <Border x:Name="Fundo" Background="{StaticResource CorBranco}"
+                            BorderBrush="Transparent" BorderThickness="0,0,0,3" Padding="{TemplateBinding Padding}">
+                        <ContentPresenter ContentSource="Header" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="Fundo" Property="BorderBrush" Value="{StaticResource CorPrimaria}" />
+                            <Setter Property="Foreground" Value="{StaticResource CorPrimaria}" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Fundo" Property="Background" Value="{StaticResource CorPrimariaClara}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- DataGrid -->
+    <Style TargetType="DataGrid">
+        <Setter Property="Background" Value="{StaticResource CorBranco}" />
+        <Setter Property="RowBackground" Value="{StaticResource CorBranco}" />
+        <Setter Property="AlternatingRowBackground" Value="{StaticResource CorLinhaAlternada}" />
+        <Setter Property="BorderBrush" Value="{StaticResource CorBorda}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="GridLinesVisibility" Value="Horizontal" />
+        <Setter Property="HorizontalGridLinesBrush" Value="{StaticResource CorBorda}" />
+        <Setter Property="RowHeight" Value="30" />
+        <Setter Property="HeadersVisibility" Value="Column" />
+    </Style>
+
+    <Style TargetType="DataGridColumnHeader">
+        <Setter Property="Background" Value="{StaticResource CorPrimaria}" />
+        <Setter Property="Foreground" Value="{StaticResource CorBranco}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Padding" Value="8,6" />
+        <Setter Property="BorderBrush" Value="{StaticResource CorPrimariaEscura}" />
+        <Setter Property="BorderThickness" Value="0,0,1,0" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+    </Style>
+
+    <Style TargetType="DataGridCell">
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="6,2" />
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="{StaticResource CorPrimariaClara}" />
+                <Setter Property="Foreground" Value="{StaticResource CorTextoPrincipal}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- GroupBox: cartão simples -->
+    <Style TargetType="GroupBox">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="GroupBox">
+                    <Border Background="{StaticResource CorBranco}" BorderBrush="{StaticResource CorBorda}"
+                            BorderThickness="1" CornerRadius="5" Padding="10">
+                        <StackPanel>
+                            <TextBlock Text="{TemplateBinding Header}" FontWeight="Bold"
+                                       Foreground="{StaticResource CorPrimaria}" Margin="0,0,0,8" />
+                            <ContentPresenter />
+                        </StackPanel>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Expander -->
+    <Style TargetType="Expander">
+        <Setter Property="Background" Value="{StaticResource CorBranco}" />
+        <Setter Property="Foreground" Value="{StaticResource CorPrimaria}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="BorderBrush" Value="{StaticResource CorBorda}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="8" />
+    </Style>
+
+</ResourceDictionary>

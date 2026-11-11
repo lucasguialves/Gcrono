@@ -6,21 +6,32 @@
         xmlns:views="clr-namespace:Cronometragem.App.Views"
         mc:Ignorable="d"
         Title="Cronometragem RFID" Height="650" Width="1100" WindowStartupLocation="CenterScreen">
-    <TabControl Margin="4">
-        <TabItem Header="Provas">
-            <views:ProvasView />
-        </TabItem>
-        <TabItem Header="Atletas e Inscrições">
-            <views:AtletasView />
-        </TabItem>
-        <TabItem Header="Configuração de Leitores">
-            <views:ConfiguracaoLeitoresView />
-        </TabItem>
-        <TabItem Header="Painel ao Vivo">
-            <views:PainelAoVivoView />
-        </TabItem>
-        <TabItem Header="Resultados">
-            <views:ResultadosView />
-        </TabItem>
-    </TabControl>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="#0D47A1" Padding="16,12">
+            <TextBlock Text="CRONOMETRAGEM RFID" Foreground="White" FontSize="16" FontWeight="Bold" />
+        </Border>
+
+        <TabControl Grid.Row="1" Margin="0" BorderThickness="0">
+            <TabItem Header="Provas">
+                <views:ProvasView />
+            </TabItem>
+            <TabItem Header="Atletas e Inscrições">
+                <views:AtletasView />
+            </TabItem>
+            <TabItem Header="Configuração de Leitores">
+                <views:ConfiguracaoLeitoresView />
+            </TabItem>
+            <TabItem Header="Painel ao Vivo">
+                <views:PainelAoVivoView />
+            </TabItem>
+            <TabItem Header="Resultados">
+                <views:ResultadosView />
+            </TabItem>
+        </TabControl>
+    </Grid>
 </Window>
