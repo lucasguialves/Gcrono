@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Cronometragem.App.Servicos;
@@ -36,6 +37,9 @@ public partial class PainelAoVivoViewModel : ObservableObject, IDisposable
 
     [ObservableProperty]
     private DateTime _horaRegistro = DateTime.Now;
+
+    private readonly DispatcherTimer _timerRelogio;
+    private bool _editandoHorarioManualmente;
 
     public Array PontosControleDisponiveis { get; } = Enum.GetValues(typeof(PontoControle));
 
@@ -79,7 +83,24 @@ public partial class PainelAoVivoViewModel : ObservableObject, IDisposable
         };
 
         _ = CarregarInscricoesAsync();
+
+        // Mantém o campo "Horário" do lançamento manual sempre com a hora atual do computador,
+        // pra operador não precisar digitar nada na maioria dos casos — só pausa enquanto ele
+        // estiver editando manualmente o campo (ver IniciarEdicaoHorario/FinalizarEdicaoHorario).
+        _timerRelogio = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
+        _timerRelogio.Tick += (_, _) =>
+        {
+            if (!_editandoHorarioManualmente)
+                HoraRegistro = DateTime.Now;
+        };
+        _timerRelogio.Start();
     }
+
+    /// <summary>Chamado pela View quando o campo de horário ganha foco — pausa a atualização automática.</summary>
+    public void IniciarEdicaoHorario() => _editandoHorarioManualmente = true;
+
+    /// <summary>Chamado pela View quando o campo de horário perde foco — retoma a hora atual.</summary>
+    public void FinalizarEdicaoHorario() => _editandoHorarioManualmente = false;
 
     [RelayCommand]
     private async Task CarregarInscricoesAsync()
@@ -155,6 +176,7 @@ public partial class PainelAoVivoViewModel : ObservableObject, IDisposable
     public void Dispose()
     {
         _servico.LeituraProcessada -= OnLeituraProcessada;
+        _timerRelogio.Stop();
         GC.SuppressFinalize(this);
     }
 }

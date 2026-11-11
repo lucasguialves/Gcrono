@@ -37,7 +37,8 @@
                           SelectedItem="{Binding PontoControleSelecionado}" />
 
                 <TextBox Grid.Row="1" Grid.Column="2" Margin="0,0,8,0"
-                         Text="{Binding HoraRegistro, StringFormat='HH:mm:ss'}" VerticalAlignment="Center" />
+                         Text="{Binding HoraRegistro, StringFormat='HH:mm:ss'}" VerticalAlignment="Center"
+                         GotFocus="TxtHoraRegistro_GotFocus" LostFocus="TxtHoraRegistro_LostFocus" />
 
                 <Button Grid.Row="1" Grid.Column="3" Content="Registrar" Padding="12,6"
                         Command="{Binding RegistrarManualCommand}" />
