@@ -19,6 +19,8 @@
 
         <DataGrid Grid.Row="1" ItemsSource="{Binding Resultados}" AutoGenerateColumns="False" IsReadOnly="True">
             <DataGrid.Columns>
+                <DataGridTextColumn Header="Pos. geral" Binding="{Binding PosicaoGeral, TargetNullValue='-'}" Width="80" />
+                <DataGridTextColumn Header="Pos. categoria" Binding="{Binding PosicaoCategoria, TargetNullValue='-'}" Width="100" />
                 <DataGridTextColumn Header="Peito" Binding="{Binding Resultado.NumeroPeito}" Width="70" />
                 <DataGridTextColumn Header="Atleta" Binding="{Binding NomeAtleta}" Width="*" />
                 <DataGridTextColumn Header="Categoria" Binding="{Binding NomeCategoria}" Width="120" />

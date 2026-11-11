@@ -5,7 +5,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Cronometragem.App.Servicos;
 
-public record ResultadoExibicao(ResultadoAtleta Resultado, string NomeAtleta, string NomeCategoria);
+public record ResultadoExibicao(
+    ResultadoAtleta Resultado,
+    string NomeAtleta,
+    string NomeCategoria,
+    int? PosicaoGeral,
+    int? PosicaoCategoria);
 
 /// <summary>
 /// Calcula o ranking da prova sob demanda, lendo as leituras brutas gravadas até o momento.
@@ -40,7 +45,7 @@ public class ServicoResultados
         var leiturasPorChip = (await db.Leituras.Where(l => l.ProvaId == provaId).ToListAsync())
             .ToLookup(l => l.ChipId);
 
-        var resultados = inscricoes.Select(inscricao =>
+        var brutos = inscricoes.Select(inscricao =>
         {
             var resultado = _calculadora.Calcular(prova, inscricao, leiturasPorChip[inscricao.ChipId]);
             var nomeAtleta = atletasPorId.TryGetValue(inscricao.AtletaId, out var atleta) ? atleta.Nome : "(desconhecido)";
@@ -49,8 +54,33 @@ public class ServicoResultados
                     ? categoria.Nome
                     : "-";
 
-            return new ResultadoExibicao(resultado, nomeAtleta, nomeCategoria);
-        });
+            return (resultado, nomeAtleta, nomeCategoria);
+        }).ToList();
+
+        // Posição só existe pra quem finalizou (tem tempo). Ordena pelo tempo líquido (ou bruto,
+        // se não tiver largada individual) e numera 1, 2, 3... tanto geral quanto por categoria.
+        var finalizadosOrdenados = brutos
+            .Where(b => b.resultado.Situacao == SituacaoResultado.Finalizado)
+            .OrderBy(b => b.resultado.TempoLiquido ?? b.resultado.TempoBruto)
+            .ToList();
+
+        var posicaoGeralPorInscricao = finalizadosOrdenados
+            .Select((b, indice) => (b.resultado.InscricaoId, Posicao: indice + 1))
+            .ToDictionary(x => x.InscricaoId, x => x.Posicao);
+
+        var posicaoCategoriaPorInscricao = finalizadosOrdenados
+            .GroupBy(b => b.nomeCategoria)
+            .SelectMany(grupo => grupo
+                .OrderBy(b => b.resultado.TempoLiquido ?? b.resultado.TempoBruto)
+                .Select((b, indice) => (b.resultado.InscricaoId, Posicao: indice + 1)))
+            .ToDictionary(x => x.InscricaoId, x => x.Posicao);
+
+        var resultados = brutos.Select(b => new ResultadoExibicao(
+            b.resultado,
+            b.nomeAtleta,
+            b.nomeCategoria,
+            posicaoGeralPorInscricao.TryGetValue(b.resultado.InscricaoId, out var pg) ? pg : null,
+            posicaoCategoriaPorInscricao.TryGetValue(b.resultado.InscricaoId, out var pc) ? pc : null));
 
         return resultados
             .OrderBy(r => r.Resultado.Situacao != SituacaoResultado.Finalizado)

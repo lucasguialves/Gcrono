@@ -55,11 +55,13 @@ public partial class ResultadosViewModel : ObservableObject
             return;
 
         using var writer = new StreamWriter(dialog.FileName, append: false, Encoding.UTF8);
-        writer.WriteLine("Peito,Atleta,Categoria,TempoBruto,TempoLiquido,Situacao");
+        writer.WriteLine("PosicaoGeral,PosicaoCategoria,Peito,Atleta,Categoria,TempoBruto,TempoLiquido,Situacao");
 
         foreach (var r in Resultados)
         {
             writer.WriteLine(string.Join(',',
+                r.PosicaoGeral?.ToString() ?? "",
+                r.PosicaoCategoria?.ToString() ?? "",
                 r.Resultado.NumeroPeito,
                 r.NomeAtleta,
                 r.NomeCategoria,
