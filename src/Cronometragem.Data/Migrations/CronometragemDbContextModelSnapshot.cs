@@ -175,11 +175,11 @@ namespace Cronometragem.Data.Migrations
                         .HasColumnName("chip_id");
 
                     b.Property<DateTime>("CriadoEm")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("criado_em");
 
                     b.Property<DateTime>("DataHoraLeitura")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("dta_hora_leitura");
 
                     b.Property<string>("OrigemLeitor")

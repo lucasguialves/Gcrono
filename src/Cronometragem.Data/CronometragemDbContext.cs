@@ -84,9 +84,13 @@ public class CronometragemDbContext : DbContext
             e.Property(l => l.ProvaId).HasColumnName("prova_id");
             e.Property(l => l.ChipId).HasColumnName("chip_id").HasMaxLength(50).IsRequired();
             e.Property(l => l.PontoControle).HasColumnName("ponto_controle").HasConversion<string>().HasMaxLength(20);
-            e.Property(l => l.DataHoraLeitura).HasColumnName("dta_hora_leitura");
+            // "timestamp without time zone": sistema roda num único local/fuso, não há motivo
+            // pra exigir DateTime.Kind=Utc (que o Npgsql exige por padrão em "timestamptz").
+            e.Property(l => l.DataHoraLeitura).HasColumnName("dta_hora_leitura")
+                .HasColumnType("timestamp without time zone");
             e.Property(l => l.OrigemLeitor).HasColumnName("origem_leitor").HasMaxLength(100);
-            e.Property(l => l.CriadoEm).HasColumnName("criado_em");
+            e.Property(l => l.CriadoEm).HasColumnName("criado_em")
+                .HasColumnType("timestamp without time zone");
 
             e.HasOne<Prova>().WithMany().HasForeignKey(l => l.ProvaId);
             e.HasIndex(l => new { l.ProvaId, l.ChipId, l.PontoControle });

@@ -12,5 +12,5 @@ public class LeituraEvento
     public PontoControle PontoControle { get; set; }
     public DateTime DataHoraLeitura { get; set; }
     public string? OrigemLeitor { get; set; }
-    public DateTime CriadoEm { get; set; } = DateTime.UtcNow;
+    public DateTime CriadoEm { get; set; } = DateTime.Now;
 }
