@@ -29,17 +29,35 @@
                     <TextBox Text="{Binding NovoNomeAtleta, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,8" />
                     <TextBlock Text="Documento (CPF/RG)" />
                     <TextBox Text="{Binding NovoDocumento, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,8" />
+                    <Grid Margin="0,0,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="8" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Data de nascimento" />
+                            <DatePicker SelectedDate="{Binding NovaDataNascimento}" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Sexo" />
+                            <ComboBox ItemsSource="{Binding OpcoesSexo}" SelectedItem="{Binding NovoSexo}" />
+                        </StackPanel>
+                    </Grid>
                     <Button Content="Cadastrar atleta" Padding="8,4" HorizontalAlignment="Left"
                             Command="{Binding CriarAtletaCommand}" />
                     <TextBlock Text="Dica: dê duplo-clique num atleta na lista abaixo para editar os dados."
-                               FontStyle="Italic" Foreground="Gray" Margin="0,6,0,0" />
+                               FontStyle="Italic" Foreground="Gray" Margin="0,6,0,0" TextWrapping="Wrap" />
+                    <TextBlock Text="A data de nascimento é usada para encaixar o atleta automaticamente na categoria certa na hora de inscrever."
+                               FontStyle="Italic" Foreground="Gray" Margin="0,2,0,0" TextWrapping="Wrap" />
                 </StackPanel>
 
                 <DataGrid x:Name="GradeAtletas" ItemsSource="{Binding Atletas}" AutoGenerateColumns="False" IsReadOnly="True"
                           MouseDoubleClick="GradeAtletas_MouseDoubleClick">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Nome" Binding="{Binding Nome}" Width="*" />
-                        <DataGridTextColumn Header="Documento" Binding="{Binding Documento}" Width="140" />
+                        <DataGridTextColumn Header="Documento" Binding="{Binding Documento}" Width="100" />
+                        <DataGridTextColumn Header="Nascimento" Binding="{Binding DataNascimento}" Width="100" />
                     </DataGrid.Columns>
                 </DataGrid>
             </DockPanel>

@@ -23,6 +23,10 @@ public partial class AtletasViewModel : ObservableObject
 
     [ObservableProperty] private string _novoNomeAtleta = string.Empty;
     [ObservableProperty] private string _novoDocumento = string.Empty;
+    [ObservableProperty] private DateTime? _novaDataNascimento;
+
+    public string[] OpcoesSexo { get; } = { "Não informado", "Masculino", "Feminino" };
+    [ObservableProperty] private string _novoSexo = "Não informado";
 
     [ObservableProperty] private Atleta? _atletaSelecionadoParaInscricao;
     [ObservableProperty] private string _novoNumeroPeito = string.Empty;
@@ -89,11 +93,19 @@ public partial class AtletasViewModel : ObservableObject
         }
 
         await using var db = await _dbFactory.CreateDbContextAsync();
-        db.Atletas.Add(new Atleta { Nome = NovoNomeAtleta, Documento = NovoDocumento });
+        db.Atletas.Add(new Atleta
+        {
+            Nome = NovoNomeAtleta,
+            Documento = NovoDocumento,
+            DataNascimento = NovaDataNascimento.HasValue ? DateOnly.FromDateTime(NovaDataNascimento.Value) : null,
+            Sexo = NovoSexo switch { "Masculino" => 'M', "Feminino" => 'F', _ => null }
+        });
         await db.SaveChangesAsync();
 
         NovoNomeAtleta = string.Empty;
         NovoDocumento = string.Empty;
+        NovaDataNascimento = null;
+        NovoSexo = "Não informado";
         await CarregarAsync();
     }
 
