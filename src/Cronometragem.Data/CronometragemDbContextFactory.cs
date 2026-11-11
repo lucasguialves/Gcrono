@@ -15,7 +15,7 @@ public class CronometragemDbContextFactory : IDesignTimeDbContextFactory<Cronome
             ?? "Host=localhost;Database=cronometragem;Username=postgres;Password=postgres";
 
         var optionsBuilder = new DbContextOptionsBuilder<CronometragemDbContext>();
-        optionsBuilder.UseNpgsql(connectionString);
+        optionsBuilder.UseNpgsql(connectionString, o => o.SetPostgresVersion(9, 6));
 
         return new CronometragemDbContext(optionsBuilder.Options);
     }

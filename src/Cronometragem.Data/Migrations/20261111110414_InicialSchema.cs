@@ -17,7 +17,7 @@ namespace Cronometragem.Data.Migrations
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     nome = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
                     documento = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
                     data_nascimento = table.Column<DateOnly>(type: "date", nullable: true),
@@ -35,7 +35,7 @@ namespace Cronometragem.Data.Migrations
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     nome = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
                     data_prova = table.Column<DateOnly>(type: "date", nullable: false),
                     hora_largada_oficial = table.Column<TimeOnly>(type: "time without time zone", nullable: false)
@@ -50,7 +50,7 @@ namespace Cronometragem.Data.Migrations
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     prova_id = table.Column<int>(type: "integer", nullable: false),
                     nome = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     idade_min = table.Column<int>(type: "integer", nullable: true),
@@ -73,7 +73,7 @@ namespace Cronometragem.Data.Migrations
                 columns: table => new
                 {
                     id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     prova_id = table.Column<int>(type: "integer", nullable: false),
                     chip_id = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     ponto_controle = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
@@ -97,7 +97,7 @@ namespace Cronometragem.Data.Migrations
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     prova_id = table.Column<int>(type: "integer", nullable: false),
                     atleta_id = table.Column<int>(type: "integer", nullable: false),
                     numero_peito = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),

@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Cronometragem.Data.Migrations
 {
     [DbContext(typeof(CronometragemDbContext))]
-    [Migration("20261111103330_InicialSchema")]
+    [Migration("20261111110414_InicialSchema")]
     partial class InicialSchema
     {
         /// <inheritdoc />
@@ -23,7 +23,7 @@ namespace Cronometragem.Data.Migrations
                 .HasAnnotation("ProductVersion", "8.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+            NpgsqlModelBuilderExtensions.UseSerialColumns(modelBuilder);
 
             modelBuilder.Entity("Cronometragem.Core.Entidades.Atleta", b =>
                 {
@@ -32,7 +32,7 @@ namespace Cronometragem.Data.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<int>("Id"));
 
                     b.Property<DateOnly?>("DataNascimento")
                         .HasColumnType("date")
@@ -76,7 +76,7 @@ namespace Cronometragem.Data.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<int>("Id"));
 
                     b.Property<int?>("IdadeMax")
                         .HasColumnType("integer")
@@ -115,7 +115,7 @@ namespace Cronometragem.Data.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<int>("Id"));
 
                     b.Property<int>("AtletaId")
                         .HasColumnType("integer")
@@ -169,7 +169,7 @@ namespace Cronometragem.Data.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<long>("Id"));
 
                     b.Property<string>("ChipId")
                         .IsRequired()
@@ -214,7 +214,7 @@ namespace Cronometragem.Data.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<int>("Id"));
 
                     b.Property<DateOnly>("DataProva")
                         .HasColumnType("date")
