@@ -3,15 +3,49 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="550">
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="600">
     <Grid Margin="12">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Margin="0,0,0,10" FontWeight="Bold" FontSize="14"
-                   Text="Leituras recebidas (mais recente primeiro)" />
+        <GroupBox Grid.Row="0" Margin="0,0,0,10"
+                  Header="Lançamento manual (backup para quando o leitor RFID falhar)">
+            <Grid Margin="8">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="140" />
+                    <ColumnDefinition Width="140" />
+                    <ColumnDefinition Width="140" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Número de peito" Margin="0,0,0,4" />
+                <TextBlock Grid.Row="0" Grid.Column="1" Text="Ponto de controle" Margin="0,0,0,4" />
+                <TextBlock Grid.Row="0" Grid.Column="2" Text="Horário" Margin="0,0,0,4" />
+
+                <TextBox Grid.Row="1" Grid.Column="0" Margin="0,0,8,0" FontSize="16"
+                         Text="{Binding NumeroPeitoDigitado, UpdateSourceTrigger=PropertyChanged}" />
+
+                <ComboBox Grid.Row="1" Grid.Column="1" Margin="0,0,8,0"
+                          ItemsSource="{Binding PontosControleDisponiveis}"
+                          SelectedItem="{Binding PontoControleSelecionado}" />
+
+                <TextBox Grid.Row="1" Grid.Column="2" Margin="0,0,8,0"
+                         Text="{Binding HoraRegistro, StringFormat='HH:mm:ss'}" VerticalAlignment="Center" />
+
+                <Button Grid.Row="1" Grid.Column="3" Content="Registrar" Padding="12,6"
+                        Command="{Binding RegistrarManualCommand}" />
+
+                <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" Margin="0,8,0,0"
+                           FontStyle="Italic" Text="{Binding TextoAtletaEncontrado}" />
+            </Grid>
+        </GroupBox>
 
         <DataGrid Grid.Row="1" ItemsSource="{Binding Leituras}" AutoGenerateColumns="False" IsReadOnly="True">
             <DataGrid.Columns>

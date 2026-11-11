@@ -16,9 +16,6 @@
         <TabItem Header="Configuração de Leitores">
             <views:ConfiguracaoLeitoresView />
         </TabItem>
-        <TabItem Header="Lançamento Manual">
-            <views:LancamentoManualView />
-        </TabItem>
         <TabItem Header="Painel ao Vivo">
             <views:PainelAoVivoView />
         </TabItem>
