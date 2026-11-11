@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:Cronometragem.App.Views"
         mc:Ignorable="d"
-        Title="Cronometragem RFID" Height="650" Width="1100" WindowStartupLocation="CenterScreen">
+        Title="GCrono" Height="650" Width="1100" WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
