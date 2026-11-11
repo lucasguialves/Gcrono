@@ -128,6 +128,10 @@ namespace Cronometragem.Data.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("chip_id");
 
+                    b.Property<int?>("ModalidadeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("modalidade_id");
+
                     b.Property<string>("NumeroPeito")
                         .IsRequired()
                         .HasMaxLength(10)
@@ -149,6 +153,8 @@ namespace Cronometragem.Data.Migrations
                     b.HasIndex("AtletaId");
 
                     b.HasIndex("CategoriaId");
+
+                    b.HasIndex("ModalidadeId");
 
                     b.HasIndex("ProvaId", "ChipId")
                         .IsUnique();
@@ -204,6 +210,32 @@ namespace Cronometragem.Data.Migrations
                     b.ToTable("leituras", (string)null);
                 });
 
+            modelBuilder.Entity("Cronometragem.Core.Entidades.Modalidade", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("nome");
+
+                    b.Property<int>("ProvaId")
+                        .HasColumnType("integer")
+                        .HasColumnName("prova_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProvaId");
+
+                    b.ToTable("modalidades", (string)null);
+                });
+
             modelBuilder.Entity("Cronometragem.Core.Entidades.Prova", b =>
                 {
                     b.Property<int>("Id")
@@ -253,6 +285,10 @@ namespace Cronometragem.Data.Migrations
                         .WithMany()
                         .HasForeignKey("CategoriaId");
 
+                    b.HasOne("Cronometragem.Core.Entidades.Modalidade", null)
+                        .WithMany()
+                        .HasForeignKey("ModalidadeId");
+
                     b.HasOne("Cronometragem.Core.Entidades.Prova", null)
                         .WithMany()
                         .HasForeignKey("ProvaId")
@@ -261,6 +297,15 @@ namespace Cronometragem.Data.Migrations
                 });
 
             modelBuilder.Entity("Cronometragem.Core.Entidades.LeituraEvento", b =>
+                {
+                    b.HasOne("Cronometragem.Core.Entidades.Prova", null)
+                        .WithMany()
+                        .HasForeignKey("ProvaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Cronometragem.Core.Entidades.Modalidade", b =>
                 {
                     b.HasOne("Cronometragem.Core.Entidades.Prova", null)
                         .WithMany()

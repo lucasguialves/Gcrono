@@ -31,9 +31,12 @@
                     <TextBox Text="{Binding NovoDocumento, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,8" />
                     <Button Content="Cadastrar atleta" Padding="8,4" HorizontalAlignment="Left"
                             Command="{Binding CriarAtletaCommand}" />
+                    <TextBlock Text="Dica: dê duplo-clique num atleta na lista abaixo para editar os dados."
+                               FontStyle="Italic" Foreground="Gray" Margin="0,6,0,0" />
                 </StackPanel>
 
-                <DataGrid ItemsSource="{Binding Atletas}" AutoGenerateColumns="False" IsReadOnly="True">
+                <DataGrid x:Name="GradeAtletas" ItemsSource="{Binding Atletas}" AutoGenerateColumns="False" IsReadOnly="True"
+                          MouseDoubleClick="GradeAtletas_MouseDoubleClick">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Nome" Binding="{Binding Nome}" Width="*" />
                         <DataGridTextColumn Header="Documento" Binding="{Binding Documento}" Width="140" />
@@ -44,6 +47,7 @@
             <!-- Coluna direita: categorias e inscrições na prova ativa -->
             <Grid Grid.Column="2">
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
@@ -79,7 +83,30 @@
                     </StackPanel>
                 </Expander>
 
-                <DockPanel Grid.Row="1">
+                <Expander Grid.Row="1" Header="Modalidades da prova (5km, 10km, caminhada...)" Margin="0,0,0,10">
+                    <StackPanel Margin="0,8,0,0">
+                        <ItemsControl ItemsSource="{Binding Modalidades}" Margin="0,0,0,8">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Nome}" Margin="0,2" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox Grid.Column="0" Margin="0,0,4,0"
+                                     Text="{Binding NovoNomeModalidade, UpdateSourceTrigger=PropertyChanged}"
+                                     ToolTip="Nome da modalidade" />
+                            <Button Grid.Column="1" Content="Adicionar" Padding="8,4"
+                                    Command="{Binding CriarModalidadeCommand}" />
+                        </Grid>
+                    </StackPanel>
+                </Expander>
+
+                <DockPanel Grid.Row="2">
                     <TextBlock DockPanel.Dock="Top" Text="Inscrições (peito + chip)" FontWeight="Bold" Margin="0,0,0,8" />
 
                     <Grid DockPanel.Dock="Bottom" Margin="0,8,0,0">
@@ -87,6 +114,7 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="80" />
                             <ColumnDefinition Width="110" />
+                            <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
@@ -102,8 +130,13 @@
                                  ToolTip="Identificador do chip" />
                         <ComboBox Grid.Column="3" Margin="0,0,4,0"
                                   ItemsSource="{Binding Categorias}" DisplayMemberPath="Nome"
-                                  SelectedItem="{Binding CategoriaSelecionadaParaInscricao}" />
-                        <Button Grid.Column="4" Content="Inscrever" Padding="8,4"
+                                  SelectedItem="{Binding CategoriaSelecionadaParaInscricao}"
+                                  ToolTip="Categoria" />
+                        <ComboBox Grid.Column="4" Margin="0,0,4,0"
+                                  ItemsSource="{Binding Modalidades}" DisplayMemberPath="Nome"
+                                  SelectedItem="{Binding ModalidadeSelecionadaParaInscricao}"
+                                  ToolTip="Modalidade" />
+                        <Button Grid.Column="5" Content="Inscrever" Padding="8,4"
                                 Command="{Binding CriarInscricaoCommand}" />
                     </Grid>
 
@@ -113,6 +146,7 @@
                             <DataGridTextColumn Header="Atleta" Binding="{Binding NomeAtleta}" Width="*" />
                             <DataGridTextColumn Header="Chip" Binding="{Binding Inscricao.ChipId}" Width="100" />
                             <DataGridTextColumn Header="Categoria" Binding="{Binding NomeCategoria}" Width="100" />
+                            <DataGridTextColumn Header="Modalidade" Binding="{Binding NomeModalidade}" Width="100" />
                         </DataGrid.Columns>
                     </DataGrid>
                 </DockPanel>

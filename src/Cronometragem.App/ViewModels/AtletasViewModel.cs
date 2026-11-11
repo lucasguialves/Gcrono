@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Cronometragem.App.ViewModels;
 
-public record InscricaoExibicao(Inscricao Inscricao, string NomeAtleta, string NomeCategoria);
+public record InscricaoExibicao(Inscricao Inscricao, string NomeAtleta, string NomeCategoria, string NomeModalidade);
 
 public partial class AtletasViewModel : ObservableObject
 {
@@ -18,6 +18,7 @@ public partial class AtletasViewModel : ObservableObject
 
     [ObservableProperty] private ObservableCollection<Atleta> _atletas = new();
     [ObservableProperty] private ObservableCollection<Categoria> _categorias = new();
+    [ObservableProperty] private ObservableCollection<Modalidade> _modalidades = new();
     [ObservableProperty] private ObservableCollection<InscricaoExibicao> _inscricoes = new();
 
     [ObservableProperty] private string _novoNomeAtleta = string.Empty;
@@ -27,10 +28,13 @@ public partial class AtletasViewModel : ObservableObject
     [ObservableProperty] private string _novoNumeroPeito = string.Empty;
     [ObservableProperty] private string _novoChipId = string.Empty;
     [ObservableProperty] private Categoria? _categoriaSelecionadaParaInscricao;
+    [ObservableProperty] private Modalidade? _modalidadeSelecionadaParaInscricao;
 
     [ObservableProperty] private string _novoNomeCategoria = string.Empty;
     [ObservableProperty] private string _novaIdadeMin = string.Empty;
     [ObservableProperty] private string _novaIdadeMax = string.Empty;
+
+    [ObservableProperty] private string _novoNomeModalidade = string.Empty;
 
     public Prova? ProvaAtiva => _estado.ProvaAtiva;
 
@@ -59,6 +63,7 @@ public partial class AtletasViewModel : ObservableObject
         if (_estado.ProvaAtiva is null)
         {
             Categorias = new ObservableCollection<Categoria>();
+            Modalidades = new ObservableCollection<Modalidade>();
             Inscricoes = new ObservableCollection<InscricaoExibicao>();
             return;
         }
@@ -66,15 +71,19 @@ public partial class AtletasViewModel : ObservableObject
         var provaId = _estado.ProvaAtiva.Id;
         Categorias = new ObservableCollection<Categoria>(
             await db.Categorias.Where(c => c.ProvaId == provaId).ToListAsync());
+        Modalidades = new ObservableCollection<Modalidade>(
+            await db.Modalidades.Where(m => m.ProvaId == provaId).ToListAsync());
 
         var inscricoes = await db.Inscricoes.Where(i => i.ProvaId == provaId).ToListAsync();
         var atletasPorId = Atletas.ToDictionary(a => a.Id);
         var categoriasPorId = Categorias.ToDictionary(c => c.Id);
+        var modalidadesPorId = Modalidades.ToDictionary(m => m.Id);
 
         Inscricoes = new ObservableCollection<InscricaoExibicao>(inscricoes.Select(i => new InscricaoExibicao(
             i,
             atletasPorId.TryGetValue(i.AtletaId, out var atleta) ? atleta.Nome : "?",
-            i.CategoriaId.HasValue && categoriasPorId.TryGetValue(i.CategoriaId.Value, out var cat) ? cat.Nome : "-")));
+            i.CategoriaId.HasValue && categoriasPorId.TryGetValue(i.CategoriaId.Value, out var cat) ? cat.Nome : "-",
+            i.ModalidadeId.HasValue && modalidadesPorId.TryGetValue(i.ModalidadeId.Value, out var mod) ? mod.Nome : "-")));
     }
 
     [RelayCommand]
@@ -127,6 +136,33 @@ public partial class AtletasViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private async Task CriarModalidadeAsync()
+    {
+        if (_estado.ProvaAtiva is null)
+        {
+            MessageBox.Show("Selecione a prova ativa na aba Provas primeiro.");
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(NovoNomeModalidade))
+        {
+            MessageBox.Show("Informe o nome da modalidade (ex.: 5km, 10km, Caminhada).");
+            return;
+        }
+
+        await using var db = await _dbFactory.CreateDbContextAsync();
+        db.Modalidades.Add(new Modalidade
+        {
+            ProvaId = _estado.ProvaAtiva.Id,
+            Nome = NovoNomeModalidade
+        });
+        await db.SaveChangesAsync();
+
+        NovoNomeModalidade = string.Empty;
+        await CarregarAsync();
+    }
+
+    [RelayCommand]
     private async Task CriarInscricaoAsync()
     {
         if (_estado.ProvaAtiva is null)
@@ -150,7 +186,8 @@ public partial class AtletasViewModel : ObservableObject
             AtletaId = AtletaSelecionadoParaInscricao.Id,
             NumeroPeito = NovoNumeroPeito,
             ChipId = NovoChipId,
-            CategoriaId = CategoriaSelecionadaParaInscricao?.Id
+            CategoriaId = CategoriaSelecionadaParaInscricao?.Id,
+            ModalidadeId = ModalidadeSelecionadaParaInscricao?.Id
         });
 
         try
@@ -169,4 +206,7 @@ public partial class AtletasViewModel : ObservableObject
         NovoChipId = string.Empty;
         await CarregarAsync();
     }
+
+    /// <summary>Chamado pela View ao dar duplo-clique num atleta — reabre os dados do banco já atualizados.</summary>
+    public async Task RecarregarAposEdicaoAsync() => await CarregarAsync();
 }

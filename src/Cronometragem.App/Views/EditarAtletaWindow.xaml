@@ -1,0 +1,51 @@
+<Window x:Class="Cronometragem.App.Views.EditarAtletaWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Editar atleta" Height="440" Width="420"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="Nome" Margin="0,0,0,2" />
+        <TextBox Grid.Row="1" x:Name="TxtNome" Margin="0,0,0,10" />
+
+        <TextBlock Grid.Row="2" Text="Documento (CPF/RG)" Margin="0,0,0,2" />
+        <TextBox Grid.Row="3" x:Name="TxtDocumento" Margin="0,0,0,10" />
+
+        <TextBlock Grid.Row="4" Text="Data de nascimento" Margin="0,0,0,2" />
+        <DatePicker Grid.Row="5" x:Name="DpDataNascimento" Margin="0,0,0,10" />
+
+        <TextBlock Grid.Row="6" Text="Sexo" Margin="0,0,0,2" />
+        <ComboBox Grid.Row="7" x:Name="CmbSexo" Margin="0,0,0,10">
+            <ComboBoxItem Content="Não informado" Tag="" />
+            <ComboBoxItem Content="Masculino" Tag="M" />
+            <ComboBoxItem Content="Feminino" Tag="F" />
+        </ComboBox>
+
+        <TextBlock Grid.Row="8" Text="Telefone" Margin="0,0,0,2" />
+        <TextBox Grid.Row="9" x:Name="TxtTelefone" Margin="0,0,0,10" />
+
+        <TextBlock Grid.Row="10" Text="E-mail" Margin="0,0,0,2" />
+        <TextBox Grid.Row="11" x:Name="TxtEmail" Margin="0,0,0,10" />
+
+        <StackPanel Grid.Row="13" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="Cancelar" Padding="12,6" Margin="0,0,8,0" IsCancel="True" Click="Cancelar_Click" />
+            <Button Content="Salvar" Padding="12,6" IsDefault="True" Click="Salvar_Click" />
+        </StackPanel>
+    </Grid>
+</Window>

@@ -108,13 +108,15 @@ public partial class PainelAoVivoViewModel : ObservableObject, IDisposable
             .ToListAsync();
         var atletasPorId = await db.Atletas.ToDictionaryAsync(a => a.Id);
         var categoriasPorId = await db.Categorias.Where(c => c.ProvaId == provaId).ToDictionaryAsync(c => c.Id);
+        var modalidadesPorId = await db.Modalidades.Where(m => m.ProvaId == provaId).ToDictionaryAsync(m => m.Id);
 
         Inscricoes = new ObservableCollection<InscricaoExibicao>(inscricoes
             .OrderBy(i => i.NumeroPeito)
             .Select(i => new InscricaoExibicao(
                 i,
                 atletasPorId.TryGetValue(i.AtletaId, out var atleta) ? atleta.Nome : "?",
-                i.CategoriaId.HasValue && categoriasPorId.TryGetValue(i.CategoriaId.Value, out var cat) ? cat.Nome : "-")));
+                i.CategoriaId.HasValue && categoriasPorId.TryGetValue(i.CategoriaId.Value, out var cat) ? cat.Nome : "-",
+                i.ModalidadeId.HasValue && modalidadesPorId.TryGetValue(i.ModalidadeId.Value, out var mod) ? mod.Nome : "-")));
     }
 
     [RelayCommand]

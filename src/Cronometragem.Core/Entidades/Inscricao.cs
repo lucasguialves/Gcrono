@@ -19,6 +19,7 @@ public class Inscricao
     public int AtletaId { get; set; }
     public string NumeroPeito { get; set; } = string.Empty;
     public int? CategoriaId { get; set; }
+    public int? ModalidadeId { get; set; }
     public string ChipId { get; set; } = string.Empty;
     public StatusInscricao Status { get; set; } = StatusInscricao.Ativa;
 }

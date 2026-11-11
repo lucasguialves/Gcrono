@@ -8,6 +8,7 @@ public class CronometragemDbContext : DbContext
     public DbSet<Atleta> Atletas => Set<Atleta>();
     public DbSet<Prova> Provas => Set<Prova>();
     public DbSet<Categoria> Categorias => Set<Categoria>();
+    public DbSet<Modalidade> Modalidades => Set<Modalidade>();
     public DbSet<Inscricao> Inscricoes => Set<Inscricao>();
     public DbSet<LeituraEvento> Leituras => Set<LeituraEvento>();
 
@@ -56,6 +57,16 @@ public class CronometragemDbContext : DbContext
             e.HasOne<Prova>().WithMany().HasForeignKey(c => c.ProvaId);
         });
 
+        modelBuilder.Entity<Modalidade>(e =>
+        {
+            e.ToTable("modalidades");
+            e.HasKey(m => m.Id);
+            e.Property(m => m.Id).HasColumnName("id");
+            e.Property(m => m.ProvaId).HasColumnName("prova_id");
+            e.Property(m => m.Nome).HasColumnName("nome").HasMaxLength(100).IsRequired();
+            e.HasOne<Prova>().WithMany().HasForeignKey(m => m.ProvaId);
+        });
+
         modelBuilder.Entity<Inscricao>(e =>
         {
             e.ToTable("inscricoes");
@@ -65,12 +76,14 @@ public class CronometragemDbContext : DbContext
             e.Property(i => i.AtletaId).HasColumnName("atleta_id");
             e.Property(i => i.NumeroPeito).HasColumnName("numero_peito").HasMaxLength(10).IsRequired();
             e.Property(i => i.CategoriaId).HasColumnName("categoria_id");
+            e.Property(i => i.ModalidadeId).HasColumnName("modalidade_id");
             e.Property(i => i.ChipId).HasColumnName("chip_id").HasMaxLength(50).IsRequired();
             e.Property(i => i.Status).HasColumnName("status").HasConversion<string>().HasMaxLength(20);
 
             e.HasOne<Prova>().WithMany().HasForeignKey(i => i.ProvaId);
             e.HasOne<Atleta>().WithMany().HasForeignKey(i => i.AtletaId);
             e.HasOne<Categoria>().WithMany().HasForeignKey(i => i.CategoriaId);
+            e.HasOne<Modalidade>().WithMany().HasForeignKey(i => i.ModalidadeId);
 
             e.HasIndex(i => new { i.ProvaId, i.ChipId }).IsUnique();
             e.HasIndex(i => new { i.ProvaId, i.NumeroPeito }).IsUnique();
