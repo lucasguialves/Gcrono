@@ -20,9 +20,13 @@ public partial class PainelAoVivoViewModel : ObservableObject, IDisposable
 {
     private readonly IDbContextFactory<CronometragemDbContext> _dbFactory;
     private readonly ServicoCronometragem _servico;
+    private readonly ServicoLargadaAutomatica _servicoLargadaAutomatica;
     private readonly EstadoAplicacao _estado;
 
     public ObservableCollection<LeituraExibicao> Leituras { get; } = new();
+
+    [ObservableProperty]
+    private ObservableCollection<string> _chipsPendentesDeLargada = new();
 
     [ObservableProperty]
     private ObservableCollection<InscricaoExibicao> _inscricoes = new();
@@ -62,12 +66,15 @@ public partial class PainelAoVivoViewModel : ObservableObject, IDisposable
     public PainelAoVivoViewModel(
         IDbContextFactory<CronometragemDbContext> dbFactory,
         ServicoCronometragem servico,
+        ServicoLargadaAutomatica servicoLargadaAutomatica,
         EstadoAplicacao estado)
     {
         _dbFactory = dbFactory;
         _servico = servico;
+        _servicoLargadaAutomatica = servicoLargadaAutomatica;
         _estado = estado;
         _servico.LeituraProcessada += OnLeituraProcessada;
+        _servicoLargadaAutomatica.PendentesAlterados += OnPendentesAlterados;
 
         _estado.PropertyChanged += async (_, e) =>
         {
@@ -76,6 +83,7 @@ public partial class PainelAoVivoViewModel : ObservableObject, IDisposable
 
             OnPropertyChanged(nameof(ProvaAtiva));
             await CarregarInscricoesAsync();
+            AtualizarChipsPendentes();
         };
 
         _ = CarregarInscricoesAsync();
@@ -134,6 +142,21 @@ public partial class PainelAoVivoViewModel : ObservableObject, IDisposable
         HoraRegistro = DateTime.Now;
     }
 
+    [RelayCommand]
+    private async Task ConfirmarLargadasAsync()
+    {
+        if (_estado.ProvaAtiva is null)
+        {
+            MessageBox.Show("Selecione a prova ativa na aba Provas primeiro.");
+            return;
+        }
+
+        var qtd = await _servicoLargadaAutomatica.ConfirmarLargadasAsync(_estado.ProvaAtiva.Id);
+        MessageBox.Show(qtd == 0
+            ? "Não havia nenhuma leitura pendente de largada."
+            : $"{qtd} largada(s) confirmada(s). A partir de agora, a próxima leitura de cada um desses chips já conta como chegada.");
+    }
+
     private void OnLeituraProcessada(object? sender, LeituraProcessadaEventArgs e)
     {
         if (_estado.ProvaAtiva is null || e.Leitura.ProvaId != _estado.ProvaAtiva.Id)
@@ -150,9 +173,27 @@ public partial class PainelAoVivoViewModel : ObservableObject, IDisposable
         });
     }
 
+    private void OnPendentesAlterados(object? sender, EventArgs e)
+    {
+        Application.Current.Dispatcher.Invoke(AtualizarChipsPendentes);
+    }
+
+    private void AtualizarChipsPendentes()
+    {
+        if (_estado.ProvaAtiva is null)
+        {
+            ChipsPendentesDeLargada = new ObservableCollection<string>();
+            return;
+        }
+
+        ChipsPendentesDeLargada = new ObservableCollection<string>(
+            _servicoLargadaAutomatica.ChipsPendentes(_estado.ProvaAtiva.Id));
+    }
+
     public void Dispose()
     {
         _servico.LeituraProcessada -= OnLeituraProcessada;
+        _servicoLargadaAutomatica.PendentesAlterados -= OnPendentesAlterados;
         GC.SuppressFinalize(this);
     }
 }

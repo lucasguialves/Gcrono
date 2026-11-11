@@ -22,8 +22,8 @@
                          Text="{Binding NovoNomeLeitor, UpdateSourceTrigger=PropertyChanged}"
                          ToolTip="Nome do leitor (ex.: Antena Largada 1)" />
                 <ComboBox Grid.Column="1" Margin="0,0,8,0"
-                          ItemsSource="{Binding PontosControleDisponiveis}"
-                          SelectedItem="{Binding NovoPontoControle}" />
+                          ItemsSource="{Binding ModosDisponiveis}"
+                          SelectedItem="{Binding NovoModo}" />
                 <Button Grid.Column="2" Content="Adicionar leitor" Padding="8,4"
                         Command="{Binding AdicionarLeitorSimuladoCommand}" />
             </Grid>
@@ -33,7 +33,7 @@
                   AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Nome" Binding="{Binding Nome}" Width="*" />
-                <DataGridTextColumn Header="Ponto de controle" Binding="{Binding PontoControle}" Width="140" />
+                <DataGridTextColumn Header="Modo" Binding="{Binding Modo}" Width="140" />
                 <DataGridCheckBoxColumn Header="Conectado" Binding="{Binding Conectado}" Width="90" />
                 <DataGridTemplateColumn Header="Ações" Width="200">
                     <DataGridTemplateColumn.CellTemplate>

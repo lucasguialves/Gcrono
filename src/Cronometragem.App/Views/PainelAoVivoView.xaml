@@ -7,10 +7,41 @@
     <Grid Margin="12">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <GroupBox Grid.Row="0" Margin="0,0,0,10"
+                  Header="Leitor único (largada e chegada automáticas)">
+            <Grid Margin="8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Chips aguardando confirmação de largada:" FontWeight="Bold" Margin="0,0,0,4" />
+                    <ItemsControl ItemsSource="{Binding ChipsPendentesDeLargada}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="#FFF0E0" BorderBrush="#E0A000" BorderThickness="1"
+                                        CornerRadius="3" Padding="6,2" Margin="0,0,6,6">
+                                    <TextBlock Text="{Binding}" />
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+                <Button Grid.Column="1" Content="Confirmar largadas" Padding="12,6" VerticalAlignment="Top"
+                        Command="{Binding ConfirmarLargadasCommand}" />
+            </Grid>
+        </GroupBox>
+
+        <GroupBox Grid.Row="1" Margin="0,0,0,10"
                   Header="Lançamento manual (backup para quando o leitor RFID falhar)">
             <Grid Margin="8">
                 <Grid.RowDefinitions>
@@ -47,7 +78,7 @@
             </Grid>
         </GroupBox>
 
-        <DataGrid Grid.Row="1" ItemsSource="{Binding Leituras}" AutoGenerateColumns="False" IsReadOnly="True">
+        <DataGrid Grid.Row="2" ItemsSource="{Binding Leituras}" AutoGenerateColumns="False" IsReadOnly="True">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Hora" Binding="{Binding DataHora, StringFormat='HH:mm:ss'}" Width="100" />
                 <DataGridTextColumn Header="Chip" Binding="{Binding ChipId}" Width="140" />
