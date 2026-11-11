@@ -186,4 +186,19 @@ public partial class ProvasViewModel : ObservableObject
 
         _estado.ProvaAtiva = ProvaSelecionada;
     }
+
+    /// <summary>Chamado pela View após editar a prova numa janela — recarrega a lista com os dados atualizados.</summary>
+    public async Task RecarregarAposEdicaoAsync()
+    {
+        await CarregarAsync();
+
+        // Se a prova editada era a ativa, atualiza a referência em EstadoAplicacao também
+        // (senão o nome/data antigos ficariam presos nas outras telas até trocar de prova ativa).
+        if (_estado.ProvaAtiva is { } ativa)
+        {
+            var atualizada = Provas.FirstOrDefault(p => p.Id == ativa.Id);
+            if (atualizada is not null)
+                _estado.ProvaAtiva = atualizada;
+        }
+    }
 }

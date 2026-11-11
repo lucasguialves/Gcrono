@@ -1,0 +1,32 @@
+<Window x:Class="Cronometragem.App.Views.EditarProvaWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Editar prova" Height="320" Width="380"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="Nome" Margin="0,0,0,2" />
+        <TextBox Grid.Row="1" x:Name="TxtNome" Margin="0,0,0,10" />
+
+        <TextBlock Grid.Row="2" Text="Data da prova" Margin="0,0,0,2" />
+        <DatePicker Grid.Row="3" x:Name="DpDataProva" Margin="0,0,0,10" />
+
+        <TextBlock Grid.Row="4" Text="Hora oficial de largada (HH:mm:ss)" Margin="0,0,0,2" />
+        <TextBox Grid.Row="5" x:Name="TxtHoraLargada" Margin="0,0,0,10" />
+
+        <StackPanel Grid.Row="7" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="Cancelar" Padding="12,6" Margin="0,0,8,0" IsCancel="True" Click="Cancelar_Click" />
+            <Button Content="Salvar" Padding="12,6" IsDefault="True" Click="Salvar_Click" />
+        </StackPanel>
+    </Grid>
+</Window>
