@@ -12,9 +12,9 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Border Grid.Row="0" Background="#0D47A1" Padding="16,8">
-            <Border Background="White" CornerRadius="4" Padding="10,4" HorizontalAlignment="Left">
-                <Image Source="/Assets/logo.png" Height="30" Stretch="Uniform" />
+        <Border Grid.Row="0" Background="#0D47A1" Padding="16,6">
+            <Border Background="White" CornerRadius="4" Padding="10,5" HorizontalAlignment="Left">
+                <Image Source="/Assets/logo.png" Height="46" Stretch="Uniform" />
             </Border>
         </Border>
 
