@@ -106,7 +106,10 @@ public class CronometragemDbContext : DbContext
                 .HasColumnType("timestamp without time zone");
 
             e.HasOne<Prova>().WithMany().HasForeignKey(l => l.ProvaId);
-            e.HasIndex(l => new { l.ProvaId, l.ChipId, l.PontoControle });
+            // Único: só uma leitura por chip/ponto de controle na prova (só a primeira largada e
+            // a primeira chegada de cada chip contam). Também protege contra corrida entre duas
+            // leituras quase simultâneas do mesmo chip (reader + lançamento manual, por exemplo).
+            e.HasIndex(l => new { l.ProvaId, l.ChipId, l.PontoControle }).IsUnique();
         });
     }
 }

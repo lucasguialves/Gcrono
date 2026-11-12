@@ -146,12 +146,21 @@ public partial class PainelAoVivoViewModel : ObservableObject, IDisposable
             return;
         }
 
-        await _servico.RegistrarLeituraAsync(
+        var registrada = await _servico.RegistrarLeituraAsync(
             _estado.ProvaAtiva.Id,
             PontoControleSelecionado,
             atleta.Inscricao.ChipId,
             HoraRegistro,
             origemLeitor: "Manual");
+
+        if (!registrada)
+        {
+            MessageBox.Show(
+                $"O peito {atleta.Inscricao.NumeroPeito} já tem uma {PontoControleSelecionado.ToString().ToLower()} registrada nesta prova. " +
+                "Não é possível lançar duas vezes o mesmo ponto de controle para o mesmo atleta.",
+                "Leitura já registrada", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
 
         NumeroPeitoDigitado = string.Empty;
         HoraRegistro = DateTime.Now;

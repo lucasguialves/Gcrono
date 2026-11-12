@@ -32,10 +32,22 @@ public class ServicoCronometragem
         _dbFactory = dbFactory;
     }
 
-    public async Task RegistrarLeituraAsync(
+    /// <summary>
+    /// Registra uma leitura, a menos que esse chip já tenha uma leitura desse mesmo ponto de
+    /// controle nessa prova — só a primeira largada e a primeira chegada de cada chip contam;
+    /// leituras repetidas (reader pegando o mesmo chip de novo, duplo clique, etc.) são
+    /// ignoradas. Retorna false quando a leitura foi rejeitada por já existir.
+    /// </summary>
+    public async Task<bool> RegistrarLeituraAsync(
         int provaId, PontoControle pontoControle, string chipId, DateTime dataHoraLeitura, string origemLeitor)
     {
         await using var db = await _dbFactory.CreateDbContextAsync();
+
+        var jaRegistrada = await db.Leituras.AnyAsync(l =>
+            l.ProvaId == provaId && l.ChipId == chipId && l.PontoControle == pontoControle);
+
+        if (jaRegistrada)
+            return false;
 
         var leitura = new LeituraEvento
         {
@@ -47,11 +59,23 @@ public class ServicoCronometragem
         };
 
         db.Leituras.Add(leitura);
-        await db.SaveChangesAsync();
+
+        try
+        {
+            await db.SaveChangesAsync();
+        }
+        catch (DbUpdateException)
+        {
+            // Duas leituras do mesmo chip/ponto quase simultâneas (reader + manual, por exemplo)
+            // podem passar pela checagem acima antes de qualquer uma gravar; a constraint única
+            // do banco pega esse caso raro e rejeita a segunda, igual à checagem normal.
+            return false;
+        }
 
         var inscricao = await db.Inscricoes.FirstOrDefaultAsync(i =>
             i.ProvaId == provaId && i.ChipId == chipId && i.Status == StatusInscricao.Ativa);
 
         LeituraProcessada?.Invoke(this, new LeituraProcessadaEventArgs(leitura, inscricao));
+        return true;
     }
 }

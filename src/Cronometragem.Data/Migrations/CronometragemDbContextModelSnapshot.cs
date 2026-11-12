@@ -205,7 +205,8 @@ namespace Cronometragem.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProvaId", "ChipId", "PontoControle");
+                    b.HasIndex("ProvaId", "ChipId", "PontoControle")
+                        .IsUnique();
 
                     b.ToTable("leituras", (string)null);
                 });
