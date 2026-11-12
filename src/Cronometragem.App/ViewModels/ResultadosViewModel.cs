@@ -55,7 +55,7 @@ public partial class ResultadosViewModel : ObservableObject
             return;
 
         using var writer = new StreamWriter(dialog.FileName, append: false, Encoding.UTF8);
-        writer.WriteLine("PosicaoGeral,PosicaoCategoria,Peito,Atleta,Categoria,TempoBruto,TempoLiquido,Situacao");
+        writer.WriteLine("PosicaoGeral,PosicaoCategoria,Peito,Atleta,Categoria,Modalidade,TempoBruto,TempoLiquido,Situacao");
 
         foreach (var r in Resultados)
         {
@@ -65,6 +65,7 @@ public partial class ResultadosViewModel : ObservableObject
                 r.Resultado.NumeroPeito,
                 r.NomeAtleta,
                 r.NomeCategoria,
+                r.NomeModalidade,
                 r.Resultado.TempoBruto?.ToString() ?? "",
                 r.Resultado.TempoLiquido?.ToString() ?? "",
                 r.Resultado.Situacao));

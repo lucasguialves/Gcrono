@@ -24,6 +24,7 @@
                 <DataGridTextColumn Header="Peito" Binding="{Binding Resultado.NumeroPeito}" Width="70" />
                 <DataGridTextColumn Header="Atleta" Binding="{Binding NomeAtleta}" Width="*" />
                 <DataGridTextColumn Header="Categoria" Binding="{Binding NomeCategoria}" Width="120" />
+                <DataGridTextColumn Header="Modalidade" Binding="{Binding NomeModalidade}" Width="100" />
                 <DataGridTextColumn Header="Tempo bruto" Binding="{Binding Resultado.TempoBruto}" Width="120" />
                 <DataGridTextColumn Header="Tempo líquido" Binding="{Binding Resultado.TempoLiquido}" Width="120" />
                 <DataGridTextColumn Header="Situação" Binding="{Binding Resultado.Situacao}" Width="100" />

@@ -18,4 +18,9 @@ public partial class PainelAoVivoView : UserControl
     private void TxtHoraRegistro_GotFocus(object sender, RoutedEventArgs e) => ViewModel.IniciarEdicaoHorario();
 
     private void TxtHoraRegistro_LostFocus(object sender, RoutedEventArgs e) => ViewModel.FinalizarEdicaoHorario();
+
+    private void AbrirTelao_Click(object sender, RoutedEventArgs e)
+    {
+        new TelaoWindow().Show();
+    }
 }

@@ -9,6 +9,7 @@ public record ResultadoExibicao(
     ResultadoAtleta Resultado,
     string NomeAtleta,
     string NomeCategoria,
+    string NomeModalidade,
     int? PosicaoGeral,
     int? PosicaoCategoria);
 
@@ -41,6 +42,9 @@ public class ServicoResultados
         var categoriasPorId = await db.Categorias
             .Where(c => c.ProvaId == provaId)
             .ToDictionaryAsync(c => c.Id);
+        var modalidadesPorId = await db.Modalidades
+            .Where(m => m.ProvaId == provaId)
+            .ToDictionaryAsync(m => m.Id);
 
         var leiturasPorChip = (await db.Leituras.Where(l => l.ProvaId == provaId).ToListAsync())
             .ToLookup(l => l.ChipId);
@@ -53,8 +57,12 @@ public class ServicoResultados
                 && categoriasPorId.TryGetValue(inscricao.CategoriaId.Value, out var categoria)
                     ? categoria.Nome
                     : "-";
+            var nomeModalidade = inscricao.ModalidadeId.HasValue
+                && modalidadesPorId.TryGetValue(inscricao.ModalidadeId.Value, out var modalidade)
+                    ? modalidade.Nome
+                    : "-";
 
-            return (resultado, nomeAtleta, nomeCategoria);
+            return (resultado, nomeAtleta, nomeCategoria, nomeModalidade);
         }).ToList();
 
         // Posição só existe pra quem finalizou (tem tempo). Ordena pelo tempo líquido (ou bruto,
@@ -79,6 +87,7 @@ public class ServicoResultados
             b.resultado,
             b.nomeAtleta,
             b.nomeCategoria,
+            b.nomeModalidade,
             posicaoGeralPorInscricao.TryGetValue(b.resultado.InscricaoId, out var pg) ? pg : null,
             posicaoCategoriaPorInscricao.TryGetValue(b.resultado.InscricaoId, out var pc) ? pc : null));
 
