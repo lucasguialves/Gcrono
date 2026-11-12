@@ -78,4 +78,15 @@ public class ServicoCronometragem
         LeituraProcessada?.Invoke(this, new LeituraProcessadaEventArgs(leitura, inscricao));
         return true;
     }
+
+    /// <summary>
+    /// Apaga todas as leituras (largada e chegada) de todos os participantes da prova — não
+    /// mexe em atletas, inscrições, categorias ou modalidades, só zera os tempos registrados.
+    /// Retorna quantas leituras foram apagadas.
+    /// </summary>
+    public async Task<int> LimparLeiturasAsync(int provaId)
+    {
+        await using var db = await _dbFactory.CreateDbContextAsync();
+        return await db.Leituras.Where(l => l.ProvaId == provaId).ExecuteDeleteAsync();
+    }
 }

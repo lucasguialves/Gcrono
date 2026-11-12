@@ -166,6 +166,28 @@ public partial class PainelAoVivoViewModel : ObservableObject, IDisposable
         HoraRegistro = DateTime.Now;
     }
 
+    [RelayCommand]
+    private async Task LimparLeiturasAsync()
+    {
+        if (_estado.ProvaAtiva is null)
+        {
+            MessageBox.Show("Selecione a prova ativa na aba Provas primeiro.");
+            return;
+        }
+
+        var confirmar = MessageBox.Show(
+            $"Apagar TODOS os tempos de largada e chegada de todos os participantes da prova " +
+            $"\"{_estado.ProvaAtiva.Nome}\"?\n\n" +
+            "Isso não apaga atletas nem inscrições, só zera os tempos registrados. Essa ação não pode ser desfeita.",
+            "Limpar todos os tempos", MessageBoxButton.YesNo, MessageBoxImage.Stop);
+
+        if (confirmar != MessageBoxResult.Yes)
+            return;
+
+        await _servico.LimparLeiturasAsync(_estado.ProvaAtiva.Id);
+        Leituras.Clear();
+    }
+
     private void OnLeituraProcessada(object? sender, LeituraProcessadaEventArgs e)
     {
         if (_estado.ProvaAtiva is null || e.Leitura.ProvaId != _estado.ProvaAtiva.Id)
