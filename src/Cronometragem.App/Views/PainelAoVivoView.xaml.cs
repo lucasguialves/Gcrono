@@ -1,5 +1,6 @@
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using Cronometragem.App.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -22,5 +23,14 @@ public partial class PainelAoVivoView : UserControl
     private void AbrirTelao_Click(object sender, RoutedEventArgs e)
     {
         new TelaoWindow().Show();
+    }
+
+    private void TxtNumeroPeito_KeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key != Key.Enter)
+            return;
+
+        if (ViewModel.RegistrarManualCommand.CanExecute(null))
+            ViewModel.RegistrarManualCommand.Execute(null);
     }
 }

@@ -30,8 +30,9 @@
                 <TextBlock Grid.Row="0" Grid.Column="1" Text="Ponto de controle" Margin="0,0,0,4" />
                 <TextBlock Grid.Row="0" Grid.Column="2" Text="Horário" Margin="0,0,0,4" />
 
-                <TextBox Grid.Row="1" Grid.Column="0" Margin="0,0,8,0" FontSize="16"
-                         Text="{Binding NumeroPeitoDigitado, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBox x:Name="TxtNumeroPeito" Grid.Row="1" Grid.Column="0" Margin="0,0,8,0" FontSize="16"
+                         Text="{Binding NumeroPeitoDigitado, UpdateSourceTrigger=PropertyChanged}"
+                         KeyDown="TxtNumeroPeito_KeyDown" />
 
                 <ComboBox Grid.Row="1" Grid.Column="1" Margin="0,0,8,0"
                           ItemsSource="{Binding PontosControleDisponiveis}"
