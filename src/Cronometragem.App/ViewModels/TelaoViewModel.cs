@@ -20,6 +20,8 @@ public record ChegadaExibicao(
 /// inteira — nunca guarda uma posição "congelada" no momento da leitura, porque duas chegadas
 /// processadas em sequência rápida (ex.: vários atletas cruzando a linha quase juntos) podiam
 /// fazer um card antigo mostrar uma posição desatualizada em relação à classificação final.
+/// A lista fica ordenada pela chegada mais recente primeiro — é o que o locutor precisa ver
+/// (quem acabou de passar agora), não o ranking geral (que já está na tela de Resultados).
 /// </summary>
 public partial class TelaoViewModel : ObservableObject, IDisposable
 {
@@ -59,7 +61,7 @@ public partial class TelaoViewModel : ObservableObject, IDisposable
 
         var chegadas = resultados
             .Where(r => r.Resultado.Situacao == SituacaoResultado.Finalizado)
-            .OrderBy(r => r.PosicaoGeral)
+            .OrderByDescending(r => r.Resultado.TempoChegada)
             .Select(r => new ChegadaExibicao(
                 r.PosicaoGeral,
                 r.NomeAtleta,
