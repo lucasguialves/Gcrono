@@ -65,11 +65,13 @@ public class ServicoResultados
             return (resultado, nomeAtleta, nomeCategoria, nomeModalidade);
         }).ToList();
 
-        // Posição só existe pra quem finalizou (tem tempo). Ordena pelo tempo líquido (ou bruto,
-        // se não tiver largada individual) e numera 1, 2, 3... tanto geral quanto por categoria.
+        // Posição só existe pra quem finalizou (tem tempo). Ranking sempre pelo TEMPO BRUTO
+        // (desde o tiro oficial da largada) — é o mesmo critério pra todo mundo, disputem ou não
+        // a largada individual; comparar tempo líquido de um atleta com bruto de outro não seria
+        // justo, já que líquido tende a ser menor.
         var finalizadosOrdenados = brutos
             .Where(b => b.resultado.Situacao == SituacaoResultado.Finalizado)
-            .OrderBy(b => b.resultado.TempoLiquido ?? b.resultado.TempoBruto)
+            .OrderBy(b => b.resultado.TempoBruto)
             .ToList();
 
         var posicaoGeralPorInscricao = finalizadosOrdenados
@@ -79,7 +81,7 @@ public class ServicoResultados
         var posicaoCategoriaPorInscricao = finalizadosOrdenados
             .GroupBy(b => b.nomeCategoria)
             .SelectMany(grupo => grupo
-                .OrderBy(b => b.resultado.TempoLiquido ?? b.resultado.TempoBruto)
+                .OrderBy(b => b.resultado.TempoBruto)
                 .Select((b, indice) => (b.resultado.InscricaoId, Posicao: indice + 1)))
             .ToDictionary(x => x.InscricaoId, x => x.Posicao);
 
@@ -93,7 +95,7 @@ public class ServicoResultados
 
         return resultados
             .OrderBy(r => r.Resultado.Situacao != SituacaoResultado.Finalizado)
-            .ThenBy(r => r.Resultado.TempoLiquido ?? r.Resultado.TempoBruto ?? TimeSpan.MaxValue)
+            .ThenBy(r => r.Resultado.TempoBruto ?? TimeSpan.MaxValue)
             .ToList();
     }
 }

@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Cronometragem.App.Servicos;
+using Cronometragem.Core.Cronometragem;
 using Cronometragem.Core.Entidades;
 
 namespace Cronometragem.App.ViewModels;
@@ -14,9 +15,11 @@ public record ChegadaExibicao(
     TimeSpan? Tempo);
 
 /// <summary>
-/// Alimenta a janela "Telão": cada vez que uma leitura de chegada é processada (automática ou
-/// manual) pra prova ativa, busca o resultado atualizado do atleta (posição geral já recalculada
-/// com essa chegada) e insere no topo da lista exibida.
+/// Alimenta a janela "Telão": a cada leitura de chegada processada (automática ou manual) pra
+/// prova ativa, recarrega o ranking COMPLETO e oficial (ServicoResultados) e reconstrói a lista
+/// inteira — nunca guarda uma posição "congelada" no momento da leitura, porque duas chegadas
+/// processadas em sequência rápida (ex.: vários atletas cruzando a linha quase juntos) podiam
+/// fazer um card antigo mostrar uma posição desatualizada em relação à classificação final.
 /// </summary>
 public partial class TelaoViewModel : ObservableObject, IDisposable
 {
@@ -44,22 +47,33 @@ public partial class TelaoViewModel : ObservableObject, IDisposable
         if (_estado.ProvaAtiva is null || e.Leitura.ProvaId != _estado.ProvaAtiva.Id)
             return;
 
-        if (e.Leitura.PontoControle != PontoControle.Chegada || e.Inscricao is null)
+        if (e.Leitura.PontoControle != PontoControle.Chegada)
             return;
 
-        var resultados = await _servicoResultados.ObterResultadosAsync(_estado.ProvaAtiva.Id);
-        var resultado = resultados.FirstOrDefault(r => r.Resultado.InscricaoId == e.Inscricao.Id);
-        if (resultado is null)
-            return;
+        await AtualizarChegadasAsync(_estado.ProvaAtiva.Id);
+    }
 
-        var chegada = new ChegadaExibicao(
-            resultado.PosicaoGeral,
-            resultado.NomeAtleta,
-            resultado.NomeModalidade,
-            resultado.NomeCategoria,
-            resultado.Resultado.TempoLiquido ?? resultado.Resultado.TempoBruto);
+    private async Task AtualizarChegadasAsync(int provaId)
+    {
+        var resultados = await _servicoResultados.ObterResultadosAsync(provaId);
 
-        Application.Current.Dispatcher.Invoke(() => Chegadas.Insert(0, chegada));
+        var chegadas = resultados
+            .Where(r => r.Resultado.Situacao == SituacaoResultado.Finalizado)
+            .OrderBy(r => r.PosicaoGeral)
+            .Select(r => new ChegadaExibicao(
+                r.PosicaoGeral,
+                r.NomeAtleta,
+                r.NomeModalidade,
+                r.NomeCategoria,
+                r.Resultado.TempoBruto))
+            .ToList();
+
+        Application.Current.Dispatcher.Invoke(() =>
+        {
+            Chegadas.Clear();
+            foreach (var chegada in chegadas)
+                Chegadas.Add(chegada);
+        });
     }
 
     public void Dispose()
